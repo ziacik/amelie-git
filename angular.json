@@ -184,6 +184,32 @@
 					}
 				}
 			}
+		},
+		"core": {
+			"projectType": "library",
+			"root": "libs/core",
+			"sourceRoot": "libs/core/src",
+			"prefix": "amelie-git",
+			"architect": {
+				"lint": {
+					"builder": "@nrwl/linter:eslint",
+					"options": {
+						"lintFilePatterns": ["libs/core/src/**/*.ts"]
+					}
+				},
+				"test": {
+					"builder": "@nrwl/jest:jest",
+					"options": {
+						"jestConfig": "libs/core/jest.config.js",
+						"passWithNoTests": true
+					}
+				}
+			},
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss"
+				}
+			}
 		}
 	},
 	"cli": {

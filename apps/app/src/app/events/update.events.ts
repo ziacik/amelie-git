@@ -6,8 +6,7 @@ import App from '../app';
 export default class UpdateEvents {
 	// initialize auto update service - most be invoked only in production
 	static initAutoUpdateService() {
-		const platform_arch =
-			platform() === 'win32' ? platform() : platform() + '_' + arch();
+		const platform_arch = platform() === 'win32' ? platform() : platform() + '_' + arch();
 		const version = app.getVersion();
 		const feed: Electron.FeedURLOptions = {
 			url: `${updateServerUrl}/update/${platform_arch}/${version}`,
@@ -29,23 +28,19 @@ export default class UpdateEvents {
 	}
 }
 
-autoUpdater.on(
-	'update-downloaded',
-	(event, releaseNotes, releaseName, releaseDate) => {
-		const dialogOpts = {
-			type: 'info',
-			buttons: ['Restart', 'Later'],
-			title: 'Application Update',
-			message: process.platform === 'win32' ? releaseNotes : releaseName,
-			detail:
-				'A new version has been downloaded. Restart the application to apply the updates.',
-		};
+autoUpdater.on('update-downloaded', (event, releaseNotes, releaseName, releaseDate) => {
+	const dialogOpts = {
+		type: 'info',
+		buttons: ['Restart', 'Later'],
+		title: 'Application Update',
+		message: process.platform === 'win32' ? releaseNotes : releaseName,
+		detail: 'A new version has been downloaded. Restart the application to apply the updates.',
+	};
 
-		dialog.showMessageBox(dialogOpts).then((returnValue) => {
-			if (returnValue.response === 0) autoUpdater.quitAndInstall();
-		});
-	}
-);
+	dialog.showMessageBox(dialogOpts).then((returnValue) => {
+		if (returnValue.response === 0) autoUpdater.quitAndInstall();
+	});
+});
 
 autoUpdater.on('checking-for-update', () => {
 	console.log('Checking for updates...\n');

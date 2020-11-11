@@ -20,15 +20,13 @@
 		"@typescript-eslint/explicit-module-boundary-types": "off",
 		"@typescript-eslint/explicit-function-return-type": "off",
 		"@typescript-eslint/no-parameter-properties": "off",
-		"indent": ["error", "tab"],
+		"indent": ["error", "tab", { "SwitchCase": 1 }],
 		"@nrwl/nx/enforce-module-boundaries": [
 			"error",
 			{
 				"enforceBuildableLibDependency": true,
 				"allow": [],
-				"depConstraints": [
-					{ "sourceTag": "*", "onlyDependOnLibsWithTags": ["*"] }
-				]
+				"depConstraints": [{ "sourceTag": "*", "onlyDependOnLibsWithTags": ["*"] }]
 			}
 		]
 	},

@@ -5,6 +5,7 @@
 
 import { app, ipcMain } from 'electron';
 import { environment } from '../../environments/environment';
+import { IsoRepository } from '../services/iso-repository';
 
 export default class ElectronEvents {
 	static bootstrapElectronEvents(): Electron.IpcMain {
@@ -13,7 +14,7 @@ export default class ElectronEvents {
 }
 
 // Retrieve app version
-ipcMain.handle('get-app-version', (event) => {
+ipcMain.handle('get-app-version', () => {
 	console.log(`Fetching application version... [v${environment.version}]`);
 
 	return environment.version;
@@ -22,4 +23,11 @@ ipcMain.handle('get-app-version', (event) => {
 // Handle App termination
 ipcMain.on('quit', (event, code) => {
 	app.exit(code);
+});
+
+ipcMain.handle('get-log', async () => {
+	const path = process.cwd();
+	const repository = new IsoRepository(path);
+	await repository.open();
+	return repository.commits;
 });

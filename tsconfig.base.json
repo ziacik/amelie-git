@@ -16,7 +16,8 @@
 		"skipDefaultLibCheck": true,
 		"baseUrl": ".",
 		"paths": {
-			"@amelie-git/core": ["libs/core/src/index.ts"]
+			"@amelie-git/core": ["libs/core/src/index.ts"],
+			"@amelie-git/testing": ["libs/testing/src/index.ts"]
 		}
 	},
 	"exclude": ["node_modules", "tmp"]

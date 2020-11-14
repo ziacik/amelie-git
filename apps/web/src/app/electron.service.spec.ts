@@ -1,3 +1,4 @@
+import { wait } from '@amelie-git/testing';
 import { TestBed } from '@angular/core/testing';
 import { ElectronService } from './electron.service';
 
@@ -20,7 +21,11 @@ describe('ElectronService', () => {
 
 	it('can request data from main process', async () => {
 		ipcRenderer.invoke.mockResolvedValue({ some: 'response' });
-		const result = await service.invoke<string>('some-channel', { some: 'argument' });
+		let result = null;
+		service
+			.invoke<string>('some-channel', { some: 'argument' })
+			.subscribe((it) => (result = it));
+		await wait();
 		expect(ipcRenderer.invoke).toHaveBeenCalledWith('some-channel', { some: 'argument' });
 		expect(result).toEqual({ some: 'response' });
 	});

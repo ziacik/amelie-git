@@ -1,4 +1,6 @@
 <header class="flex">
 	<h1>{{ title }}</h1>
 </header>
-<main></main>
+<main>
+	<amelie-git-log-view [commits]="commits$ | async"></amelie-git-log-view>
+</main>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
+import { from, Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
@@ -14,7 +15,7 @@ export class ElectronService {
 		return this.electronCached;
 	}
 
-	async invoke<T extends any>(channel: string, ...args: any[]): Promise<T> {
-		return this.electron.ipcRenderer.invoke(channel, ...args);
+	invoke<T extends any>(channel: string, ...args: any[]): Observable<T> {
+		return from(<Promise<T>>this.electron.ipcRenderer.invoke(channel, ...args));
 	}
 }

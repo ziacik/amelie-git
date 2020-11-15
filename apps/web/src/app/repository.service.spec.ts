@@ -12,7 +12,7 @@ describe('RepositoryService', () => {
 
 	beforeEach(() => {
 		commits = [
-			new Commit('id', 'name', 'message', new Person('Amélie', 'amelie@mail'), new Person('Amélie', 'amelie@mail')),
+			new Commit('id', 'name', 'message', new Person('Amélie', 'amelie@mail'), new Person('Amélie', 'amelie@mail'), []),
 		];
 		TestBed.configureTestingModule({
 			providers: [ElectronService],

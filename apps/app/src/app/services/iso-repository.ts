@@ -22,7 +22,7 @@ export class IsoRepository implements Repository {
 		const message = messageSplit[1]?.trim() + messageSplit[2]?.trim();
 		const author = this.adaptPerson(isoCommit.commit.author);
 		const committer = this.adaptPerson(isoCommit.commit.committer);
-		return new Commit(id, name, message, author, committer);
+		return new Commit(id, name, message, author, committer, isoCommit.commit.parent);
 	}
 
 	private adaptPerson(author: CommitObject['author']): Person {

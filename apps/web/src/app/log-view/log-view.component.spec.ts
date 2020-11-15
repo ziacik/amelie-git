@@ -27,7 +27,8 @@ describe('LogViewComponent', () => {
 				'first-commit',
 				'first-message',
 				new Person('Amélie', 'amelie@mail'),
-				new Person('Amélie', 'amelie@mail')
+				new Person('Amélie', 'amelie@mail'),
+				[]
 			),
 		];
 		component.commits = commits;

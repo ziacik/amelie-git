@@ -30,6 +30,7 @@ describe('IsoRepository', () => {
 			expect(commit1.author.email).toBe('one@author');
 			expect(commit1.committer.name).toBe('One Committer');
 			expect(commit1.committer.email).toBe('one@committer');
+			expect(commit1.parentIds).toEqual(['parent1-one', 'parent2-one']);
 			expect(commit2.id).toBe('sha-two');
 			expect(commit2.name).toBe('Fix: no detail');
 			expect(commit2.message).toBeFalsy();
@@ -37,6 +38,7 @@ describe('IsoRepository', () => {
 			expect(commit2.author.email).toBe('two@author');
 			expect(commit2.committer.name).toBe('Two Committer');
 			expect(commit2.committer.email).toBe('two@committer');
+			expect(commit2.parentIds).toEqual(['parent1-two', 'parent2-two']);
 		});
 	});
 });
@@ -47,7 +49,7 @@ function isoCommit(foo: string): ReadCommitResult {
 		commit: {
 			message: `Fix: Some ${foo} fix\n\nSome ${foo} fix commit description`,
 			tree: `tree-${foo}`,
-			parent: [`parent1-${foo}`, `parent2-${foo}`],
+			parent: [`parent1-${foo.toLowerCase()}`, `parent2-${foo.toLowerCase()}`],
 			author: {
 				name: `${foo} Author`,
 				email: `${foo.toLowerCase()}@author`,

@@ -6,6 +6,7 @@ export class Commit {
 		public readonly name: string,
 		public readonly message: string,
 		public readonly author: Person,
-		public readonly committer: Person
+		public readonly committer: Person,
+		public readonly parentIds: string[]
 	) {}
 }

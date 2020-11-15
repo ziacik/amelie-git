@@ -26,7 +26,8 @@ describe('AppComponent', () => {
 				'first-commit',
 				'first-message',
 				new Person('Amélie', 'amelie@mail'),
-				new Person('Amélie', 'amelie@mail')
+				new Person('Amélie', 'amelie@mail'),
+				[]
 			),
 		];
 		const repositoryService = TestBed.inject(RepositoryService);

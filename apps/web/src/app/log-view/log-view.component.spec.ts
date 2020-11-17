@@ -1,6 +1,7 @@
 import { Commit, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatListModule } from '@angular/material/list';
+import { CommitLineComponent } from '../commit-line/commit-line.component';
 import { PositionedCommit } from '../repository/positioned-commit';
 import { LogViewComponent } from './log-view.component';
 
@@ -11,7 +12,7 @@ describe('LogViewComponent', () => {
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [MatListModule],
-			declarations: [LogViewComponent],
+			declarations: [LogViewComponent, CommitLineComponent],
 		}).compileComponents();
 	});
 

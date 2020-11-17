@@ -4,6 +4,7 @@ import { MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
+import { CommitLineComponent } from './commit-line/commit-line.component';
 import { ElectronService } from './electron.service';
 import { LogViewComponent } from './log-view/log-view.component';
 import { RepositoryService } from './repository.service';
@@ -15,7 +16,7 @@ describe('AppComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [MatListModule],
 			providers: [RepositoryService, ElectronService],
-			declarations: [AppComponent, LogViewComponent],
+			declarations: [AppComponent, LogViewComponent, CommitLineComponent],
 		}).compileComponents();
 	});
 

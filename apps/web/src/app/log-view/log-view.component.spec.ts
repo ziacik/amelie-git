@@ -1,6 +1,7 @@
 import { Commit, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatListModule } from '@angular/material/list';
+import { PositionedCommit } from '../repository/positioned-commit';
 import { LogViewComponent } from './log-view.component';
 
 describe('LogViewComponent', () => {
@@ -21,17 +22,20 @@ describe('LogViewComponent', () => {
 	});
 
 	it('shows a list of commits', () => {
-		const commits = [
-			new Commit(
-				'id',
-				'first-commit',
-				'first-message',
-				new Person('Amélie', 'amelie@mail'),
-				new Person('Amélie', 'amelie@mail'),
-				[]
+		const positionedCommits = [
+			new PositionedCommit(
+				0,
+				new Commit(
+					'id',
+					'first-commit',
+					'first-message',
+					new Person('Amélie', 'amelie@mail'),
+					new Person('Amélie', 'amelie@mail'),
+					[]
+				)
 			),
 		];
-		component.commits = commits;
+		component.commits = positionedCommits;
 		fixture.detectChanges();
 		expect(fixture.debugElement.nativeElement.textContent).toContain('first-commit');
 	});

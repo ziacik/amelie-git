@@ -53,11 +53,15 @@ describe('AppComponent', () => {
 		expect(compiled.querySelector('h1').textContent).toContain('Amelie Git');
 	});
 
-	it('gets a log from repository and shows them in a log view', () => {
+	it('gets a log from repository, converts to positioned commits and shows them in a log view', () => {
 		const fixture = TestBed.createComponent(AppComponent);
 		fixture.detectChanges();
-		const logView = fixture.debugElement.query(By.directive(LogViewComponent))?.componentInstance;
+		const logView = fixture.debugElement.query(By.directive(LogViewComponent))?.componentInstance as LogViewComponent;
 		expect(logView).toBeDefined();
-		expect(logView.commits).toEqual(commits);
+
+		const positionedCommits = logView.commits;
+		const commitsFromPositionedCommits = positionedCommits.map((it) => it.commit);
+
+		expect(commitsFromPositionedCommits).toEqual(commits);
 	});
 });

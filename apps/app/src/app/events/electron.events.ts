@@ -26,7 +26,7 @@ ipcMain.on('quit', (event, code) => {
 });
 
 ipcMain.handle('get-log', async () => {
-	const path = process.cwd();
+	const path = process.env.DIR || process.cwd();
 	const repository = new IsoRepository(path);
 	await repository.open();
 	return repository.commits;

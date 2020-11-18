@@ -70,7 +70,37 @@ class CommitPositioner {
 			this.coordinatesById[commit.id][1] = position;
 		}
 
-		return this.commits.map((commit) => new PositionedCommit(this.getPosition(commit), commit));
+		return this.createPositionedCommits();
+	}
+
+	private createPositionedCommits() {
+		const positionedCommits = this.commits.map(
+			(commit) => new PositionedCommit(this.getPosition(commit), commit, [], [])
+		);
+
+		const positionedCommitsById = positionedCommits.reduce((map, positionedCommit) => {
+			map[positionedCommit.commit.id] = positionedCommit;
+			return map;
+		}, {});
+
+		for (const positionedCommit of positionedCommits) {
+			const parents = positionedCommit.commit.parentIds.map((parentId) => positionedCommitsById[parentId]);
+			positionedCommit.parents.push(...parents);
+
+			const thisRow = this.getRow(positionedCommit.commit);
+
+			for (const parent of parents) {
+				const parentRow = this.getRow(parent.commit);
+				const parentPosition = parent.position;
+
+				for (let row = thisRow; row <= parentRow; row++) {
+					const transitions = positionedCommits[row].transitions;
+					if (!transitions[parentPosition]) transitions[parentPosition] = positionedCommit;
+				}
+			}
+		}
+
+		return positionedCommits;
 	}
 
 	private addToChildrenById(commit: Commit) {

@@ -33,7 +33,9 @@ describe('LogViewComponent', () => {
 					new Person('Amélie', 'amelie@mail'),
 					new Person('Amélie', 'amelie@mail'),
 					[]
-				)
+				),
+				[],
+				[]
 			),
 		];
 		component.commits = positionedCommits;

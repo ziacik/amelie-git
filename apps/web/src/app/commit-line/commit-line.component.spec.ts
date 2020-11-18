@@ -29,7 +29,9 @@ describe('CommitLineComponent', () => {
 				new Person('Amélie', 'amelie@mail'),
 				new Person('Amélie', 'amelie@mail'),
 				[]
-			)
+			),
+			[],
+			[]
 		);
 		component.positionedCommit = commit;
 		fixture.detectChanges();

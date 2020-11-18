@@ -15,28 +15,28 @@ describe('CommitPositioningService', () => {
 		it('single commit', () => {
 			const commits = [commit('a')];
 			const positionedCommits = service.position(commits);
-			expect(positionedCommits[0].column).toEqual(0);
+			expect(positionedCommits[0].position).toEqual(0);
 		});
 
 		it('two commits on a branch', () => {
 			const commits = [commit('b', ['a']), commit('a')];
 			const positionedCommits = service.position(commits);
-			const columns = positionedCommits.map((it) => it.column);
-			expect(columns).toEqual([0, 0]);
+			const positions = positionedCommits.map((it) => it.position);
+			expect(positions).toEqual([0, 0]);
 		});
 
 		it('two branches', () => {
 			const commits = [commit('c', ['a']), commit('b', ['a']), commit('a')];
 			const positionedCommits = service.position(commits);
-			const columns = positionedCommits.map((it) => it.column);
-			expect(columns).toEqual([0, 1, 0]);
+			const positions = positionedCommits.map((it) => it.position);
+			expect(positions).toEqual([0, 1, 0]);
 		});
 
 		it('merge of two branches', () => {
 			const commits = [commit('c', ['b', 'a']), commit('b', ['a']), commit('a')];
 			const positionedCommits = service.position(commits);
-			const columns = positionedCommits.map((it) => it.column);
-			expect(columns).toEqual([0, 1, 0]);
+			const positions = positionedCommits.map((it) => it.position);
+			expect(positions).toEqual([0, 1, 0]);
 		});
 
 		it('two merges of two branches', () => {
@@ -48,15 +48,15 @@ describe('CommitPositioningService', () => {
 				commit('a'),
 			];
 			const positionedCommits = service.position(commits);
-			const columns = positionedCommits.map((it) => it.column);
-			expect(columns).toEqual([0, 1, 0, 1, 0]);
+			const positions = positionedCommits.map((it) => it.position);
+			expect(positions).toEqual([0, 1, 0, 1, 0]);
 		});
 
 		it('three branches', () => {
 			const commits = [commit('d', ['a']), commit('c', ['a']), commit('b', ['a']), commit('a')];
 			const positionedCommits = service.position(commits);
-			const columns = positionedCommits.map((it) => it.column);
-			expect(columns).toEqual([0, 1, 2, 0]);
+			const positions = positionedCommits.map((it) => it.position);
+			expect(positions).toEqual([0, 1, 2, 0]);
 		});
 
 		it('overlapping merges', () => {
@@ -68,8 +68,8 @@ describe('CommitPositioningService', () => {
 				commit('a'),
 			];
 			const positionedCommits = service.position(commits);
-			const columns = positionedCommits.map((it) => it.column);
-			expect(columns).toEqual([0, 1, 2, 0, 0]);
+			const positions = positionedCommits.map((it) => it.position);
+			expect(positions).toEqual([0, 1, 2, 0, 0]);
 		});
 	});
 });

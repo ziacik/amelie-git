@@ -112,13 +112,13 @@ class CommitPositioner {
 
 	private branchChildren(commit: Commit): Commit[] {
 		const children = this.childrenById[commit.id] || [];
-		const branchChilden = children.filter((child) => child.parentIds[child.parentIds.length - 1] === commit.id);
+		const branchChilden = children.filter((child) => child.parentIds[0] === commit.id);
 		return branchChilden;
 	}
 
 	private mergeChilden(commit: Commit): Commit[] {
 		const children = this.childrenById[commit.id] || [];
-		const branchChilden = children.filter((child) => child.parentIds[child.parentIds.length - 1] !== commit.id);
+		const branchChilden = children.filter((child) => child.parentIds[0] !== commit.id);
 		return branchChilden;
 	}
 

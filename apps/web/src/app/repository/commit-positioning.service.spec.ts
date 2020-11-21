@@ -32,7 +32,7 @@ describe('CommitPositioningService', () => {
 		});
 
 		it('merge of two branches', () => {
-			const commits = [commit('c', ['b', 'a']), commit('b', ['a']), commit('a')];
+			const commits = [commit('c', ['a', 'b']), commit('b', ['a']), commit('a')];
 			const positionedCommits = service.position(commits);
 			const positions = positionedCommits.map((it) => it.position);
 			expect(positions).toEqual([0, 1, 0]);
@@ -40,9 +40,9 @@ describe('CommitPositioningService', () => {
 
 		it('two merges of two branches', () => {
 			const commits = [
-				commit('e', ['d', 'c']),
+				commit('e', ['c', 'd']),
 				commit('d', ['c']),
-				commit('c', ['b', 'a']),
+				commit('c', ['a', 'b']),
 				commit('b', ['a']),
 				commit('a'),
 			];
@@ -60,7 +60,7 @@ describe('CommitPositioningService', () => {
 
 		it('overlapping merges', () => {
 			const commits = [
-				commit('e', ['d', 'c', 'b']),
+				commit('e', ['b', 'c', 'd']),
 				commit('d', ['b']),
 				commit('c', ['b']),
 				commit('b', ['a']),
@@ -74,14 +74,14 @@ describe('CommitPositioningService', () => {
 
 	it('sets correct positioned parents', () => {
 		const commits = [
-			commit('e', ['d', 'c', 'b']),
+			commit('e', ['b', 'c', 'd']),
 			commit('d', ['b']),
 			commit('c', ['b']),
 			commit('b', ['a']),
 			commit('a'),
 		];
 		const [e, d, c, b, a] = service.position(commits);
-		expect(e.parents).toEqual([d, c, b]);
+		expect(e.parents).toEqual([b, c, d]);
 		expect(d.parents).toEqual([b]);
 		expect(c.parents).toEqual([b]);
 		expect(b.parents).toEqual([a]);
@@ -90,7 +90,7 @@ describe('CommitPositioningService', () => {
 
 	it('sets correct transitional commits (i.e. the commits for which vertical lines should be drawn at those positions)', () => {
 		const commits = [
-			commit('e', ['d', 'c', 'b']),
+			commit('e', ['b', 'c', 'd']),
 			commit('d', ['b']),
 			commit('c', ['b']),
 			commit('b', ['a']),

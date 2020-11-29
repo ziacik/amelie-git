@@ -2,10 +2,11 @@ import { Commit } from '@amelie-git/core';
 import { Injectable } from '@angular/core';
 import { PositionedCommit } from './positioned-commit';
 
-type Coordinate = [row: number, position: number];
-
-/// Algorithm credit @PierreVigier https://pvigier.github.io/2019/05/06/commit-graph-drawing-algorithms.html
-/// Algorithm adjusted
+type Position = number;
+type TakenPositionDescriptor = {
+	commit: PositionedCommit;
+	stop?: boolean;
+};
 
 @Injectable({
 	providedIn: 'root',
@@ -18,144 +19,84 @@ export class CommitPositioningService {
 }
 
 class CommitPositioner {
-	private rowTakenPositions: Set<number>[];
-	private coordinatesById: { [key: string]: Coordinate };
-	private childrenById: { [key: string]: Commit[] };
+	private takenPositions: TakenPositionDescriptor[];
 
 	constructor(public readonly commits: Commit[]) {}
 
 	position(): PositionedCommit[] {
-		this.rowTakenPositions = [];
-		this.coordinatesById = {};
-		this.childrenById = {};
+		this.takenPositions = [];
 
-		const currentTakenPositions = new Set<number>();
-
-		for (let row = 0; row < this.commits.length; row++) {
-			const commit = this.commits[row];
-
-			this.coordinatesById[commit.id] = [row, 0];
-
-			this.addToChildrenById(commit);
-
-			const forbiddenPositions = this.calculateForbiddenPositions(commit);
-
-			const branchChildren = this.branchChildren(commit);
-			const branchChildForPositioning = branchChildren.find((branchChild) => {
-				const branchPosition = this.getPosition(branchChild);
-				return !forbiddenPositions.has(branchPosition);
-			});
-
-			let position: number;
-
-			if (branchChildForPositioning) {
-				const branchChildPosition = this.getPosition(branchChildForPositioning);
-				position = branchChildPosition;
-			} else {
-				const freePosition = this.findLowestFreePosition(currentTakenPositions);
-				position = freePosition;
-			}
-
-			currentTakenPositions.add(position);
-
-			branchChildren
-				.filter((branchChild) => branchChild !== branchChildForPositioning)
-				.forEach((branchChild) => {
-					const branchChildPosition = this.getPosition(branchChild);
-					currentTakenPositions.delete(branchChildPosition);
-				});
-
-			this.rowTakenPositions.push(currentTakenPositions);
-
-			this.coordinatesById[commit.id][1] = position;
-		}
-
-		return this.createPositionedCommits();
-	}
-
-	private createPositionedCommits() {
-		const positionedCommits = this.commits.map(
-			(commit) => new PositionedCommit(this.getPosition(commit), commit, [], [])
+		const positionedCommits = this.commits.map((commit) => new PositionedCommit(0, commit, [], [], []));
+		const positionedCommitsById: { [key: string]: PositionedCommit } = positionedCommits.reduce(
+			(acc, cur) => ({ ...acc, [cur.commit.id]: cur }),
+			{}
 		);
 
-		const positionedCommitsById = positionedCommits.reduce((map, positionedCommit) => {
-			map[positionedCommit.commit.id] = positionedCommit;
-			return map;
-		}, {});
-
 		for (const positionedCommit of positionedCommits) {
-			const parents = positionedCommit.commit.parentIds.map((parentId) => positionedCommitsById[parentId]);
-			positionedCommit.parents.push(...parents);
+			const commit = positionedCommit.commit;
+			positionedCommit.parents.push(...commit.parentIds.map((id) => positionedCommitsById[id]));
+			positionedCommit.parents.forEach((parent) => parent.children.push(positionedCommit));
 
-			const thisRow = this.getRow(positionedCommit.commit);
+			const ourPositionInTaken = this.takenPositionOf(positionedCommit);
+			const ourRealPosition = ourPositionInTaken >= 0 ? ourPositionInTaken : this.firstFreePosition();
 
-			for (const parent of parents) {
-				const parentRow = this.getRow(parent.commit);
-				const parentPosition = parent.position;
+			this.removeStopPositions(positionedCommit);
 
-				for (let row = thisRow; row <= parentRow; row++) {
-					const transitions = positionedCommits[row].transitions;
-					if (!transitions[parentPosition]) transitions[parentPosition] = positionedCommit;
-				}
-			}
+			const branchParent = positionedCommit.parents[0];
+			const mergeParents = positionedCommit.parents.slice(1);
+
+			this.addBranchParentToTaken(branchParent, ourPositionInTaken);
+			this.addMergeParentsToTaken(mergeParents);
+
+			positionedCommit.position = ourRealPosition;
 		}
 
 		return positionedCommits;
 	}
 
-	private addToChildrenById(commit: Commit) {
-		commit.parentIds.forEach((parentId) => {
-			if (!this.childrenById[parentId]) this.childrenById[parentId] = [];
-			this.childrenById[parentId].push(commit);
-		});
+	private addMergeParentsToTaken(mergeParents: PositionedCommit[]) {
+		mergeParents
+			.filter((mergeParent) => this.takenPositionOf(mergeParent) < 0)
+			.forEach((mergeParent) => this.addToFirstFreePosition(mergeParent));
 	}
 
-	private branchChildren(commit: Commit): Commit[] {
-		const children = this.childrenById[commit.id] || [];
-		const branchChilden = children.filter((child) => child.parentIds[0] === commit.id);
-		return branchChilden;
-	}
-
-	private mergeChilden(commit: Commit): Commit[] {
-		const children = this.childrenById[commit.id] || [];
-		const branchChilden = children.filter((child) => child.parentIds[0] !== commit.id);
-		return branchChilden;
-	}
-
-	private getRow(commit: Commit): number {
-		const [row] = this.coordinatesById[commit.id];
-		return row;
-	}
-
-	private getPosition(commit: Commit): number {
-		const [, position] = this.coordinatesById[commit.id];
-		return position;
-	}
-
-	private findLowestFreePosition(currentTakenPositions: Set<number>): number {
-		let expectedFreePosition = 0;
-		for (const takenPosition of currentTakenPositions) {
-			if (takenPosition !== expectedFreePosition) return expectedFreePosition;
-			expectedFreePosition++;
+	private addBranchParentToTaken(branchParent: PositionedCommit, ourPositionInTaken: number) {
+		if (!branchParent) {
+			return;
 		}
-		return expectedFreePosition;
+
+		const branchParentPositionInTaken = this.takenPositionOf(branchParent);
+
+		if (ourPositionInTaken >= 0 && branchParentPositionInTaken >= 0) {
+			this.takenPositions[ourPositionInTaken] = { commit: branchParent, stop: true };
+		} else if (ourPositionInTaken >= 0 && branchParentPositionInTaken < 0) {
+			this.takenPositions[ourPositionInTaken] = { commit: branchParent };
+		} else {
+			this.addToFirstFreePosition(branchParent);
+		}
 	}
 
-	private calculateForbiddenPositions(commit: Commit): Set<number> {
-		const mergeChildren = this.mergeChilden(commit);
-		if (!mergeChildren.length) return new Set<number>();
-
-		const forbiddenPositions = new Set<number>();
-		const mergeChildrenRows = mergeChildren.map((mergeChild) => this.getRow(mergeChild));
-		const minRow = Math.min(...mergeChildrenRows);
-
-		for (let row = minRow; row < this.rowTakenPositions.length; row++) {
-			const takenPositions = this.rowTakenPositions[row];
-			for (const takenPosition of takenPositions) {
-				forbiddenPositions.add(takenPosition);
+	private removeStopPositions(positionedCommit: PositionedCommit) {
+		for (let i = 0; i < this.takenPositions.length; i++) {
+			const takenPosition = this.takenPositions[i];
+			if (takenPosition?.stop && this.takenPositions[i]?.commit === positionedCommit) {
+				this.takenPositions[i] = null;
 			}
 		}
+	}
 
-		return forbiddenPositions;
+	private takenPositionOf(commit: PositionedCommit): Position {
+		return this.takenPositions.findIndex((takenPosition) => takenPosition?.commit === commit && !takenPosition?.stop);
+	}
+
+	private firstFreePosition(): Position {
+		const freePosition = this.takenPositions.indexOf(null);
+		return freePosition >= 0 ? freePosition : this.takenPositions.length;
+	}
+
+	private addToFirstFreePosition(commit: PositionedCommit): Position {
+		const freePosition = this.firstFreePosition();
+		this.takenPositions[freePosition] = { commit };
+		return freePosition;
 	}
 }

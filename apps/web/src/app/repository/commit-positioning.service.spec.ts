@@ -68,7 +68,20 @@ describe('CommitPositioningService', () => {
 			];
 			const positionedCommits = service.position(commits);
 			const positions = positionedCommits.map((it) => it.position);
-			expect(positions).toEqual([0, 1, 2, 0, 0]);
+			expect(positions).toEqual([0, 2, 1, 0, 0]);
+		});
+
+		it('criss-cross merges', () => {
+			const commits = [
+				commit('e', ['b', 'd']),
+				commit('d', ['b', 'c']),
+				commit('c', ['a']),
+				commit('b', ['a']),
+				commit('a'),
+			];
+			const positionedCommits = service.position(commits);
+			const positions = positionedCommits.map((it) => it.position);
+			expect(positions).toEqual([0, 1, 2, 0, 2]);
 		});
 	});
 
@@ -88,7 +101,7 @@ describe('CommitPositioningService', () => {
 		expect(a.parents).toEqual([]);
 	});
 
-	it('sets correct transitional commits (i.e. the commits for which vertical lines should be drawn at those positions)', () => {
+	it('sets correct positioned children', () => {
 		const commits = [
 			commit('e', ['b', 'c', 'd']),
 			commit('d', ['b']),
@@ -97,11 +110,28 @@ describe('CommitPositioningService', () => {
 			commit('a'),
 		];
 		const [e, d, c, b, a] = service.position(commits);
-		expect(e.transitions).toEqual([e, e, e]);
-		expect(d.transitions).toEqual([e, e, e]);
-		expect(c.transitions).toEqual([e, undefined, e]);
-		expect(b.transitions).toEqual([e]);
-		expect(a.transitions).toEqual([b]);
+		expect(e.children).toEqual([]);
+		expect(d.children).toEqual([e]);
+		expect(c.children).toEqual([e]);
+		expect(b.children).toEqual([e, d, c]);
+		expect(a.children).toEqual([b]);
+	});
+
+	// TODO the transitions should be solved at presentation layer
+	xit('sets correct transitional commits (i.e. the commits that are neither parents nor children but for which vertical lines should be drawn at those positions)', () => {
+		const commits = [
+			commit('e', ['b', 'c', 'd']),
+			commit('d', ['b']),
+			commit('c', ['b']),
+			commit('b', ['a']),
+			commit('a'),
+		];
+		const [e, d, c, b, a] = service.position(commits);
+		expect(e.transitions).toEqual([]);
+		expect(d.transitions).toEqual([e, e]);
+		expect(c.transitions).toEqual([e, undefined, d]);
+		expect(b.transitions).toEqual([]);
+		expect(a.transitions).toEqual([]);
 	});
 });
 

@@ -116,23 +116,6 @@ describe('CommitPositioningService', () => {
 		expect(b.children).toEqual([e, d, c]);
 		expect(a.children).toEqual([b]);
 	});
-
-	// TODO the transitions should be solved at presentation layer
-	xit('sets correct transitional commits (i.e. the commits that are neither parents nor children but for which vertical lines should be drawn at those positions)', () => {
-		const commits = [
-			commit('e', ['b', 'c', 'd']),
-			commit('d', ['b']),
-			commit('c', ['b']),
-			commit('b', ['a']),
-			commit('a'),
-		];
-		const [e, d, c, b, a] = service.position(commits);
-		expect(e.transitions).toEqual([]);
-		expect(d.transitions).toEqual([e, e]);
-		expect(c.transitions).toEqual([e, undefined, d]);
-		expect(b.transitions).toEqual([]);
-		expect(a.transitions).toEqual([]);
-	});
 });
 
 function commit(id: string, parentIds: string[] = []): Commit {

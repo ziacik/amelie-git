@@ -1,5 +1,5 @@
 <mat-selection-list [multiple]="false">
 	<mat-list-option *ngFor="let positionedCommit of commits" [value]="positionedCommit.commit.id">
-		<amelie-git-commit-line [positionedCommit]="positionedCommit"></amelie-git-commit-line>
+		<amelie-git-commit-line [positionedCommit]="positionedCommit" [positionsCount]="positionsCount" [transitions]="transitionsForCommit(positionedCommit)"></amelie-git-commit-line>
 	</mat-list-option>
 </mat-selection-list>

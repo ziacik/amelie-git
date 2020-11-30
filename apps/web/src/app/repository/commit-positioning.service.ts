@@ -26,7 +26,7 @@ class CommitPositioner {
 	position(): PositionedCommit[] {
 		this.takenPositions = [];
 
-		const positionedCommits = this.commits.map((commit) => new PositionedCommit(0, commit, [], [], []));
+		const positionedCommits = this.commits.map((commit) => new PositionedCommit(0, commit, [], []));
 		const positionedCommitsById: { [key: string]: PositionedCommit } = positionedCommits.reduce(
 			(acc, cur) => ({ ...acc, [cur.commit.id]: cur }),
 			{}

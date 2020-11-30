@@ -1,0 +1,14 @@
+.line {
+	display: flex;
+	line-height: 48px;
+}
+
+.line svg {
+	flex-shrink: 0;
+	flex-grow: 0;
+}
+
+.line div {
+	overflow: hidden;
+	text-overflow: ellipsis;
+}

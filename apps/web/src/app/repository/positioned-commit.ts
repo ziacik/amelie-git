@@ -5,7 +5,6 @@ export class PositionedCommit {
 		public position: number,
 		public readonly commit: Commit,
 		public readonly parents: PositionedCommit[],
-		public readonly children: PositionedCommit[],
-		public readonly transitions: PositionedCommit[]
+		public readonly children: PositionedCommit[]
 	) {}
 }

@@ -9,7 +9,7 @@ export type Line = {
 };
 
 @Component({
-	selector: 'amelie-git-commit-line',
+	selector: 'app-commit-line',
 	templateUrl: './commit-line.component.html',
 	styleUrls: ['./commit-line.component.scss'],
 })

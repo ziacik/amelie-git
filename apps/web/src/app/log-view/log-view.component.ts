@@ -2,7 +2,7 @@ import { Component, Input } from '@angular/core';
 import { PositionedCommit } from '../repository/positioned-commit';
 
 @Component({
-	selector: 'amelie-git-log-view',
+	selector: 'app-log-view',
 	templateUrl: './log-view.component.html',
 	styleUrls: ['./log-view.component.scss'],
 })

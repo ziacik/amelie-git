@@ -10,7 +10,7 @@
 			},
 			"root": "apps/web",
 			"sourceRoot": "apps/web/src",
-			"prefix": "amelie-git",
+			"prefix": "app",
 			"architect": {
 				"build": {
 					"builder": "@angular-devkit/build-angular:browser",
@@ -189,7 +189,7 @@
 			"projectType": "library",
 			"root": "libs/core",
 			"sourceRoot": "libs/core/src",
-			"prefix": "amelie-git",
+			"prefix": "core",
 			"architect": {
 				"lint": {
 					"builder": "@nrwl/linter:eslint",

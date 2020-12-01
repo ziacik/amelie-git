@@ -6,7 +6,7 @@ import { CommitPositioningService } from './repository/commit-positioning.servic
 import { PositionedCommit } from './repository/positioned-commit';
 
 @Component({
-	selector: 'amelie-git-root',
+	selector: 'app-root',
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
 })

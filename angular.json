@@ -22,10 +22,7 @@
 						"tsConfig": "apps/web/tsconfig.app.json",
 						"aot": true,
 						"assets": ["apps/web/src/favicon.ico", "apps/web/src/assets"],
-						"styles": [
-							"./node_modules/@angular/material/prebuilt-themes/pink-bluegrey.css",
-							"apps/web/src/styles.scss"
-						],
+						"styles": ["apps/web/src/styles.scss"],
 						"scripts": []
 					},
 					"configurations": {

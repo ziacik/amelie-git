@@ -5,6 +5,7 @@
 
 import { app, ipcMain } from 'electron';
 import { environment } from '../../environments/environment';
+import { openRepository } from '../services/app-services';
 import { IsoRepository } from '../services/iso-repository';
 
 export default class ElectronEvents {
@@ -25,9 +26,12 @@ ipcMain.on('quit', (event, code) => {
 	app.exit(code);
 });
 
-ipcMain.handle('get-log', async () => {
-	const path = process.env.DIR || process.cwd();
+ipcMain.handle('get-log', async (_event, path: string) => {
 	const repository = new IsoRepository(path);
 	await repository.open();
 	return repository.commits;
+});
+
+ipcMain.handle('open-repository', async () => {
+	return openRepository();
 });

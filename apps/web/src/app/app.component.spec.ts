@@ -1,5 +1,5 @@
 import { Commit, Person } from '@amelie-git/core';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatListModule } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { of } from 'rxjs';
@@ -8,15 +8,18 @@ import { CommitLineComponent } from './commit-line/commit-line.component';
 import { ElectronService } from './electron.service';
 import { LogViewComponent } from './log-view/log-view.component';
 import { RepositoryService } from './repository.service';
+import { StartPageComponent } from './start-page/start-page.component';
 
 describe('AppComponent', () => {
 	let commits: Commit[];
+	let fixture: ComponentFixture<AppComponent>;
+	let repositoryService: RepositoryService;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			imports: [MatListModule],
 			providers: [RepositoryService, ElectronService],
-			declarations: [AppComponent, LogViewComponent, CommitLineComponent],
+			declarations: [AppComponent, LogViewComponent, CommitLineComponent, StartPageComponent],
 		}).compileComponents();
 	});
 
@@ -31,38 +34,55 @@ describe('AppComponent', () => {
 				[]
 			),
 		];
-		const repositoryService = TestBed.inject(RepositoryService);
+		repositoryService = TestBed.inject(RepositoryService);
 		jest.spyOn(repositoryService, 'getLog').mockReturnValue(of(commits));
+		fixture = TestBed.createComponent(AppComponent);
+		fixture.detectChanges();
 	});
 
 	it('should create the app', () => {
-		const fixture = TestBed.createComponent(AppComponent);
 		const app = fixture.componentInstance;
 		expect(app).toBeTruthy();
 	});
 
-	it(`should have as title 'Amelie Git'`, () => {
-		const fixture = TestBed.createComponent(AppComponent);
-		const app = fixture.componentInstance;
-		expect(app.title).toEqual('Amelie Git');
+	it('shows a start page at first and not a log view', () => {
+		const startPage = fixture.debugElement.query(By.directive(StartPageComponent));
+		const logView = fixture.debugElement.query(By.directive(LogViewComponent));
+		expect(startPage).toBeTruthy();
+		expect(logView).toBeFalsy();
 	});
 
-	it('should render title', () => {
-		const fixture = TestBed.createComponent(AppComponent);
-		fixture.detectChanges();
-		const compiled = fixture.nativeElement;
-		expect(compiled.querySelector('h1').textContent).toContain('Amelie Git');
-	});
+	describe('when user opens a repository', () => {
+		beforeEach(() => {
+			const startPage = <StartPageComponent>(
+				fixture.debugElement.query(By.directive(StartPageComponent))?.componentInstance
+			);
+			startPage.repositoryOpened.emit('/path/selected');
+		});
 
-	it('gets a log from repository, converts to positioned commits and shows them in a log view', () => {
-		const fixture = TestBed.createComponent(AppComponent);
-		fixture.detectChanges();
-		const logView = fixture.debugElement.query(By.directive(LogViewComponent))?.componentInstance as LogViewComponent;
-		expect(logView).toBeDefined();
+		it('requests a log for that repository', () => {
+			expect(repositoryService.getLog).toHaveBeenCalledWith('/path/selected');
+		});
 
-		const positionedCommits = logView.commits;
-		const commitsFromPositionedCommits = positionedCommits.map((it) => it.commit);
+		describe('when the log is retrieved', () => {
+			beforeEach(() => {
+				fixture.detectChanges();
+			});
 
-		expect(commitsFromPositionedCommits).toEqual(commits);
+			it('converts the received commits to positioned commits and shows them in a log view', () => {
+				const logView = <LogViewComponent>fixture.debugElement.query(By.directive(LogViewComponent))?.componentInstance;
+				expect(logView).toBeDefined();
+
+				const positionedCommits = logView.commits;
+				const commitsFromPositionedCommits = positionedCommits.map((it) => it.commit);
+
+				expect(commitsFromPositionedCommits).toEqual(commits);
+			});
+
+			it('does not show start page', () => {
+				const startPage = fixture.debugElement.query(By.directive(StartPageComponent));
+				expect(startPage).toBeFalsy();
+			});
+		});
 	});
 });

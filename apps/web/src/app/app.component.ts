@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { RepositoryService } from './repository.service';
@@ -10,7 +10,7 @@ import { PositionedCommit } from './repository/positioned-commit';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
 	title = 'Amelie Git';
 	commits$: Observable<PositionedCommit[]>;
 
@@ -19,9 +19,9 @@ export class AppComponent implements OnInit {
 		private commitPositioningService: CommitPositioningService
 	) {}
 
-	ngOnInit(): void {
+	onRepositoryOpened(pathSelected: string): void {
 		this.commits$ = this.repositoryService
-			.getLog('')
+			.getLog(pathSelected)
 			.pipe(map((commits) => this.commitPositioningService.position(commits)));
 	}
 }

@@ -1,6 +1,4 @@
-<header class="flex">
-	<h1>{{ title }}</h1>
-</header>
 <main>
-	<app-log-view [commits]="commits$ | async"></app-log-view>
+	<app-start-page *ngIf="!(commits$ | async)" (repositoryOpened)="onRepositoryOpened($event)"></app-start-page>
+	<app-log-view *ngIf="commits$ | async as commits" [commits]="commits"></app-log-view>
 </main>

@@ -1,7 +1,7 @@
 import { Commit, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { PositionedCommit } from '../repository/positioned-commit';
-import { CommitLineComponent, Line } from './commit-line.component';
+import { ColorIndex, CommitLineComponent, Line } from './commit-line.component';
 
 describe('CommitLineComponent', () => {
 	let component: CommitLineComponent;
@@ -96,10 +96,89 @@ describe('CommitLineComponent', () => {
 			expect(asStrings(component.lines)).toEqual(['1.5:0 -> 1.5:1', '2.5:0 -> 2.5:1']);
 		});
 	});
+
+	describe('calculation of colors', () => {
+		it('with one parent at the same position', () => {
+			component.positionedCommit = commitWithParents(0, [0]);
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([0]);
+		});
+
+		it('with one parent to the right (branch parent is always the same color, based on the commit position)', () => {
+			component.positionedCommit = commitWithParents(0, [2]);
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([0]);
+		});
+
+		it('with one parent to the left (branch parent is always the same color, based on the commit position)', () => {
+			component.positionedCommit = commitWithParents(1, [0]);
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([1]);
+		});
+
+		it('with three parents (merge parents are always different color, based on the position of the parent)', () => {
+			component.positionedCommit = commitWithParents(0, [1, 2, 3]);
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([0, 2, 3]);
+		});
+
+		it('with one child at the same position', () => {
+			component.positionedCommit = commitWithBranchChildren(0, [0]);
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([0]);
+		});
+
+		it('with one branch child to the right (branch child has color based on position of the child)', () => {
+			component.positionedCommit = commitWithBranchChildren(0, [2]);
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([2]);
+		});
+
+		it('with one branch child to the left (branch child has color based on position of the child)', () => {
+			component.positionedCommit = commitWithBranchChildren(1, [0]);
+			component.positionedCommit.position = 1;
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([0]);
+		});
+
+		it('with one merge child to the right (merge child has always the same color based on position of the commit)', () => {
+			component.positionedCommit = commitWithMergeChildren(0, [2]);
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([0]);
+		});
+
+		it('with one merge child to the left (merge child has always the same color based on position of the commit)', () => {
+			component.positionedCommit = commitWithMergeChildren(1, [0]);
+			component.positionedCommit.position = 1;
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([1]);
+		});
+
+		it('with transitions (transition colors are based on their position)', () => {
+			component.transitions = [1, 2];
+			component.ngOnInit();
+			expect(asColors(component.lines)).toEqual([1, 2]);
+		});
+	});
+
+	describe('color translation', () => {
+		it('returns a color for the position, rotating if the index exceeds number of available colors', () => {
+			component.colors = ['red', 'pink', 'white'];
+			expect(component.colorFor(0)).toEqual('red');
+			expect(component.colorFor(1)).toEqual('pink');
+			expect(component.colorFor(2)).toEqual('white');
+			expect(component.colorFor(3)).toEqual('red');
+			expect(component.colorFor(4)).toEqual('pink');
+		});
+	});
 });
 
 function asStrings(lines: Line[]): string[] {
 	return lines.map((line) => `${line.x1}:${line.y1} -> ${line.x2}:${line.y2}`);
+}
+
+function asColors(lines: Line[]): ColorIndex[] {
+	return lines.map((line) => line.color);
 }
 
 function singleCommit(position: number): PositionedCommit {

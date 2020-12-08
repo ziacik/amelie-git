@@ -1,11 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { PositionedCommit } from '../repository/positioned-commit';
 
+export type ColorIndex = number;
+export type Position = number;
+
 export type Line = {
-	x1: number;
-	y1: number;
-	x2: number;
-	y2: number;
+	x1: Position;
+	y1: Position;
+	x2: Position;
+	y2: Position;
+	color: ColorIndex;
 };
 
 @Component({
@@ -19,12 +23,17 @@ export class CommitLineComponent implements OnInit {
 	@Input() positionsCount: number;
 
 	lines: Line[];
+	colors: string[] = ['#0092cc', '#ff3333', '#dcd427', '#779933'];
 
 	ngOnInit(): void {
 		this.lines = [];
 		this.calculateParentLines();
 		this.calculateChildLines();
 		this.addTransitionLines();
+	}
+
+	colorFor(index: ColorIndex): string {
+		return this.colors[index % this.colors.length];
 	}
 
 	private addTransitionLines() {
@@ -66,6 +75,7 @@ function centerUpLine(fromPosition: number, toPosition: number): Line {
 		y1: 0.5,
 		x2: toPosition + 0.5,
 		y2: 0,
+		color: toPosition,
 	};
 }
 
@@ -75,6 +85,7 @@ function centerDownLine(fromPosition: number, toPosition: number): Line {
 		y1: 0.5,
 		x2: toPosition + 0.5,
 		y2: 1,
+		color: toPosition,
 	};
 }
 
@@ -84,5 +95,6 @@ function verticalLine(position: number): Line {
 		y1: 0,
 		x2: position + 0.5,
 		y2: 1,
+		color: position,
 	};
 }

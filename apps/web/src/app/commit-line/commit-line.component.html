@@ -1,9 +1,9 @@
 <div class="line">
 	<svg height="48px" [attr.width]="(18 * positionsCount) + 'px'">
-		<circle [attr.cx]="(9 + 18 * positionedCommit?.position) + 'px'" cy="24px" r="6px" fill="red" />
 		<ng-container *ngFor="let line of lines">
-			<line [attr.x1]="(18 * line.x1) + 'px'" [attr.y1]="(48 * line.y1) + 'px'" [attr.x2]="(18 * line.x2) + 'px'" [attr.y2]="(48 * line.y2) + 'px'" style="stroke:red;stroke-width:2" />
+			<line [attr.x1]="(18 * line.x1) + 'px'" [attr.y1]="(48 * line.y1) + 'px'" [attr.x2]="(18 * line.x2) + 'px'" [attr.y2]="(48 * line.y2) + 'px'" [style.stroke]="colorFor(line.color)" style="stroke-width:2" />
 		</ng-container>
+		<circle [attr.cx]="(9 + 18 * positionedCommit?.position) + 'px'" cy="24px" r="6px" [attr.fill]="colorFor(positionedCommit?.position)" />
 	</svg>
 	<div style="margin-left: 18px">{{ positionedCommit?.commit.name }}</div>
 </div>

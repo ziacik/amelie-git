@@ -54,7 +54,7 @@ export default class SquirrelEvents {
 		return SquirrelEvents.isAppFirstRun;
 	}
 
-	private static update(args: Array<string>) {
+	private static update(args: Array<string>): void {
 		try {
 			spawn(SquirrelEvents.updateExe, args, { detached: true }).on('close', () => setTimeout(app.quit, 1000));
 		} catch (error) {

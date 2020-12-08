@@ -14,7 +14,7 @@ describe('ElectronService', () => {
 		electron = {
 			ipcRenderer,
 		};
-		(<unknown>window['require']) = () => electron;
+		(<unknown>window['require']) = (): unknown => electron;
 		TestBed.configureTestingModule({});
 		service = TestBed.inject(ElectronService);
 	});

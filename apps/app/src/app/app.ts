@@ -11,27 +11,27 @@ export default class App {
 	static application: Electron.App;
 	static BrowserWindow;
 
-	public static isDevelopmentMode() {
+	public static isDevelopmentMode(): boolean {
 		const isEnvironmentSet: boolean = 'ELECTRON_IS_DEV' in process.env;
 		const getFromEnvironment: boolean = parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
 
 		return isEnvironmentSet ? getFromEnvironment : !environment.production;
 	}
 
-	private static onWindowAllClosed() {
+	private static onWindowAllClosed(): void {
 		if (process.platform !== 'darwin') {
 			App.application.quit();
 		}
 	}
 
-	private static onClose() {
+	private static onClose(): void {
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
 		App.mainWindow = null;
 	}
 
-	private static onRedirect(event: any, url: string) {
+	private static onRedirect(event: Event, url: string): void {
 		if (url !== App.mainWindow.webContents.getURL()) {
 			// this is a normal external redirect, open it in a new browser window
 			event.preventDefault();
@@ -39,7 +39,7 @@ export default class App {
 		}
 	}
 
-	private static onReady() {
+	private static onReady(): void {
 		// This method will be called when Electron has finished
 		// initialization and is ready to create browser windows.
 		// Some APIs can only be used after this event occurs.
@@ -47,7 +47,7 @@ export default class App {
 		App.loadMainWindow();
 	}
 
-	private static onActivate() {
+	private static onActivate(): void {
 		// On macOS it's common to re-create a window in the app when the
 		// dock icon is clicked and there are no other windows open.
 		if (App.mainWindow === null) {
@@ -55,7 +55,7 @@ export default class App {
 		}
 	}
 
-	private static initMainWindow() {
+	private static initMainWindow(): void {
 		const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
 		const width = Math.min(1280, workAreaSize.width || 1280);
 		const height = Math.min(720, workAreaSize.height || 720);
@@ -86,14 +86,11 @@ export default class App {
 
 		// Emitted when the window is closed.
 		App.mainWindow.on('closed', () => {
-			// Dereference the window object, usually you would store windows
-			// in an array if your app supports multi windows, this is the time
-			// when you should delete the corresponding element.
-			App.mainWindow = null;
+			App.onClose();
 		});
 	}
 
-	private static loadMainWindow() {
+	private static loadMainWindow(): void {
 		// load the index.html of the app.
 		if (!App.application.isPackaged) {
 			App.mainWindow.loadURL(`http://localhost:${rendererAppPort}`);
@@ -108,7 +105,7 @@ export default class App {
 		}
 	}
 
-	static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
+	static main(app: Electron.App, browserWindow: typeof BrowserWindow): void {
 		// we pass the Electron.App object and the
 		// Electron.BrowserWindow into this function
 		// so this class has no dependencies. This

@@ -21,7 +21,7 @@ export class LogViewComponent {
 
 	positionsCount: number;
 
-	private calculate() {
+	private calculate(): void {
 		this.positionsCount = 0;
 		this.transitionsForCommits = new WeakMap<PositionedCommit, number[]>();
 		this.commits.forEach((commit) => this.transitionsForCommits.set(commit, []));
@@ -41,7 +41,12 @@ export class LogViewComponent {
 		}
 	}
 
-	private addTransitions(fromRow: number, commit: PositionedCommit, parent: PositionedCommit, isBranchParent: boolean) {
+	private addTransitions(
+		fromRow: number,
+		commit: PositionedCommit,
+		parent: PositionedCommit,
+		isBranchParent: boolean
+	): void {
 		const transitionPosition = isBranchParent ? commit.position : parent.position;
 
 		for (let i = fromRow + 1; i < this.commits.length; i++) {

@@ -14,7 +14,7 @@ export class StartPageComponent {
 
 	constructor(private electronService: ElectronService) {}
 
-	openRepository() {
+	openRepository(): void {
 		this.electronService
 			.invoke('open-repository')
 			.pipe(untilDestroyed(this), filter(Boolean))

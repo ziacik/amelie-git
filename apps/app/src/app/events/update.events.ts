@@ -5,7 +5,7 @@ import App from '../app';
 
 export default class UpdateEvents {
 	// initialize auto update service - most be invoked only in production
-	static initAutoUpdateService() {
+	static initAutoUpdateService(): void {
 		const platform_arch = platform() === 'win32' ? platform() : platform() + '_' + arch();
 		const version = app.getVersion();
 		const feed: Electron.FeedURLOptions = {
@@ -21,7 +21,7 @@ export default class UpdateEvents {
 	}
 
 	// check for updates - most be invoked after initAutoUpdateService() and only in production
-	static checkForUpdates() {
+	static checkForUpdates(): void {
 		if (!App.isDevelopmentMode() && autoUpdater.getFeedURL() !== '') {
 			autoUpdater.checkForUpdates();
 		}

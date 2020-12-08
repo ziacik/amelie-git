@@ -54,13 +54,13 @@ class CommitPositioner {
 		return positionedCommits;
 	}
 
-	private addMergeParentsToTaken(mergeParents: PositionedCommit[]) {
+	private addMergeParentsToTaken(mergeParents: PositionedCommit[]): void {
 		mergeParents
 			.filter((mergeParent) => this.takenPositionOf(mergeParent) < 0)
 			.forEach((mergeParent) => this.addToFirstFreePosition(mergeParent));
 	}
 
-	private addBranchParentToTaken(branchParent: PositionedCommit, ourPositionInTaken: number) {
+	private addBranchParentToTaken(branchParent: PositionedCommit, ourPositionInTaken: number): void {
 		if (!branchParent) {
 			return;
 		}
@@ -76,7 +76,7 @@ class CommitPositioner {
 		}
 	}
 
-	private removeStopPositions(positionedCommit: PositionedCommit) {
+	private removeStopPositions(positionedCommit: PositionedCommit): void {
 		for (let i = 0; i < this.takenPositions.length; i++) {
 			const takenPosition = this.takenPositions[i];
 			if (takenPosition?.stop && this.takenPositions[i]?.commit === positionedCommit) {

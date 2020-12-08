@@ -36,13 +36,13 @@ export class CommitLineComponent implements OnInit {
 		return this.colors[index % this.colors.length];
 	}
 
-	private addTransitionLines() {
+	private addTransitionLines(): void {
 		const transitionPositions = this.transitions || [];
 		const transitionLines = transitionPositions.map(verticalLine);
 		this.lines.push(...transitionLines);
 	}
 
-	private calculateParentLines() {
+	private calculateParentLines(): void {
 		const parents = this.positionedCommit?.parents || [];
 		const branchParent = parents[0];
 		const mergeParents = parents.slice(1);
@@ -55,7 +55,7 @@ export class CommitLineComponent implements OnInit {
 		this.lines.push(...mergeLines);
 	}
 
-	private calculateChildLines() {
+	private calculateChildLines(): void {
 		const children = this.positionedCommit?.children || [];
 		const branchChildren = children.filter((child) => child.parents.indexOf(this.positionedCommit) === 0);
 		const mergeChild = children.find((child) => child.parents.indexOf(this.positionedCommit) > 0);

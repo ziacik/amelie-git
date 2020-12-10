@@ -26,10 +26,17 @@ ipcMain.on('quit', (event, code) => {
 	app.exit(code);
 });
 
+// todo should not always create IsoRepository
 ipcMain.handle('get-log', async (_event, path: string) => {
 	const repository = new IsoRepository(path);
 	await repository.open();
 	return repository.commits;
+});
+
+ipcMain.handle('get-branches', async (_event, path: string) => {
+	const repository = new IsoRepository(path);
+	await repository.open();
+	return repository.branches;
 });
 
 ipcMain.handle('open-repository', async () => {

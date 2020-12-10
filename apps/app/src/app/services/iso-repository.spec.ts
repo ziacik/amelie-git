@@ -1,9 +1,10 @@
-import { IsoRepository } from './iso-repository';
-import { log, ReadCommitResult } from 'isomorphic-git';
 import * as fs from 'fs';
+import { listBranches, log, ReadCommitResult } from 'isomorphic-git';
+import { IsoRepository } from './iso-repository';
 
 jest.mock('isomorphic-git', () => ({
 	log: jest.fn(),
+	listBranches: jest.fn(),
 }));
 
 describe('IsoRepository', () => {
@@ -39,6 +40,13 @@ describe('IsoRepository', () => {
 			expect(commit2.committer.name).toBe('Two Committer');
 			expect(commit2.committer.email).toBe('two@committer');
 			expect(commit2.parentIds).toEqual(['parent1-two', 'parent2-two']);
+		});
+
+		it('will use isomorphic-git to get the repository branches and adds them to the repository', async () => {
+			(listBranches as jest.Mock).mockResolvedValue(['branch-a', 'branch-b']);
+			await repository.open();
+			expect(listBranches).toHaveBeenCalledWith({ fs, dir: '/some/path' });
+			expect(repository.branches).toEqual(['branch-a', 'branch-b']);
 		});
 	});
 });

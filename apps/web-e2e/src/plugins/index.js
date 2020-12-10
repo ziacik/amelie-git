@@ -13,6 +13,7 @@
 
 const { preprocessTypescript } = require('@nrwl/cypress/plugins/preprocessor');
 
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 module.exports = (on, config) => {
 	// `on` is used to hook into various events Cypress emits
 	// `config` is the resolved Cypress config

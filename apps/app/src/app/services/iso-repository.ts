@@ -1,18 +1,24 @@
 import { Commit, Person, Repository } from '@amelie-git/core';
 import * as fs from 'fs';
-import { CommitObject, log, ReadCommitResult } from 'isomorphic-git';
+import { CommitObject, listBranches, log, ReadCommitResult } from 'isomorphic-git';
 
 export class IsoRepository implements Repository {
 	readonly commits: Commit[];
+	readonly branches: string[];
 
 	constructor(public readonly path: string) {
 		this.commits = [];
+		this.branches = [];
 	}
 
 	async open(): Promise<void> {
-		const isoCommits = await log({ fs, dir: this.path });
+		const isoCommits = (await log({ fs, dir: this.path })) || [];
 		this.commits.splice(0, this.commits.length);
 		this.commits.push(...isoCommits.map((isoCommit) => this.adaptCommit(isoCommit)));
+
+		const isoBranches = (await listBranches({ fs, dir: this.path })) || [];
+		this.branches.splice(0, this.branches.length);
+		this.branches.push(...isoBranches);
 	}
 
 	private adaptCommit(isoCommit: ReadCommitResult): Commit {

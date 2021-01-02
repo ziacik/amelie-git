@@ -1,9 +1,13 @@
-import { Commit, Person } from '@amelie-git/core';
+import { Branch, Commit, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { By } from '@angular/platform-browser';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
+import { BranchViewComponent } from './branch-view/branch-view.component';
 import { CommitLineComponent } from './commit-line/commit-line.component';
 import { ElectronService } from './electron.service';
 import { LogViewComponent } from './log-view/log-view.component';
@@ -12,14 +16,15 @@ import { StartPageComponent } from './start-page/start-page.component';
 
 describe('AppComponent', () => {
 	let commits: Commit[];
+	let branches: Branch[];
 	let fixture: ComponentFixture<AppComponent>;
 	let repositoryService: RepositoryService;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [MatListModule],
+			imports: [NoopAnimationsModule, MatListModule, MatIconModule, MatSidenavModule],
 			providers: [RepositoryService, ElectronService],
-			declarations: [AppComponent, LogViewComponent, CommitLineComponent, StartPageComponent],
+			declarations: [AppComponent, LogViewComponent, CommitLineComponent, BranchViewComponent, StartPageComponent],
 		}).compileComponents();
 	});
 
@@ -34,8 +39,10 @@ describe('AppComponent', () => {
 				[]
 			),
 		];
+		branches = [new Branch('master'), new Branch('slave')];
 		repositoryService = TestBed.inject(RepositoryService);
 		jest.spyOn(repositoryService, 'getLog').mockReturnValue(of(commits));
+		jest.spyOn(repositoryService, 'getBranches').mockReturnValue(of(branches));
 		fixture = TestBed.createComponent(AppComponent);
 		fixture.detectChanges();
 	});
@@ -64,6 +71,16 @@ describe('AppComponent', () => {
 			expect(repositoryService.getLog).toHaveBeenCalledWith('/path/selected');
 		});
 
+		it('requests a list of branches for that repository', () => {
+			expect(repositoryService.getBranches).toHaveBeenCalledWith('/path/selected');
+		});
+
+		it('hides the start page', () => {
+			fixture.detectChanges();
+			const startPage = fixture.debugElement.query(By.directive(StartPageComponent));
+			expect(startPage).toBeFalsy();
+		});
+
 		describe('when the log is retrieved', () => {
 			beforeEach(() => {
 				fixture.detectChanges();
@@ -78,10 +95,21 @@ describe('AppComponent', () => {
 
 				expect(commitsFromPositionedCommits).toEqual(commits);
 			});
+		});
 
-			it('does not show start page', () => {
-				const startPage = fixture.debugElement.query(By.directive(StartPageComponent));
-				expect(startPage).toBeFalsy();
+		describe('when the list of branches is retrieved', () => {
+			beforeEach(() => {
+				fixture.detectChanges();
+			});
+
+			it('shows them in a branch view', () => {
+				const branchView = <BranchViewComponent>(
+					fixture.debugElement.query(By.directive(BranchViewComponent))?.componentInstance
+				);
+				expect(branchView).toBeDefined();
+
+				const branchesInView = branchView.branches;
+				expect(branchesInView).toEqual(branches);
 			});
 		});
 	});

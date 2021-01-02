@@ -1,3 +1,4 @@
+import { Branch } from '@amelie-git/core';
 import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -12,7 +13,10 @@ import { PositionedCommit } from './repository/positioned-commit';
 })
 export class AppComponent {
 	title = 'Amelie Git';
+
+	repository: string;
 	commits$: Observable<PositionedCommit[]>;
+	branches$: Observable<Branch[]>;
 
 	constructor(
 		private repositoryService: RepositoryService,
@@ -20,8 +24,12 @@ export class AppComponent {
 	) {}
 
 	onRepositoryOpened(pathSelected: string): void {
+		this.repository = pathSelected;
+
 		this.commits$ = this.repositoryService
 			.getLog(pathSelected)
 			.pipe(map((commits) => this.commitPositioningService.position(commits)));
+
+		this.branches$ = this.repositoryService.getBranches(pathSelected);
 	}
 }

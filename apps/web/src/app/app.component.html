@@ -1,4 +1,11 @@
 <main>
-	<app-start-page *ngIf="!(commits$ | async)" (repositoryOpened)="onRepositoryOpened($event)"></app-start-page>
-	<app-log-view *ngIf="commits$ | async as commits" [commits]="commits"></app-log-view>
+	<app-start-page *ngIf="!repository" (repositoryOpened)="onRepositoryOpened($event)"></app-start-page>
+
+	<mat-drawer-container *ngIf="repository" autosize>
+		<mat-drawer #drawer mode="side" opened>
+			<app-branch-view *ngIf="branches$ | async as branches" [branches]="branches"></app-branch-view>
+		</mat-drawer>
+
+		<app-log-view *ngIf="commits$ | async as commits" [commits]="commits"></app-log-view>
+	</mat-drawer-container>
 </main>

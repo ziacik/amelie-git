@@ -1,10 +1,10 @@
-import { Commit, Person, Repository } from '@amelie-git/core';
+import { Branch, Commit, Person, Repository } from '@amelie-git/core';
 import * as fs from 'fs';
 import { CommitObject, listBranches, log, ReadCommitResult } from 'isomorphic-git';
 
 export class IsoRepository implements Repository {
 	readonly commits: Commit[];
-	readonly branches: string[];
+	readonly branches: Branch[];
 
 	constructor(public readonly path: string) {
 		this.commits = [];
@@ -18,9 +18,8 @@ export class IsoRepository implements Repository {
 
 		const isoBranches = (await listBranches({ fs, dir: this.path })) || [];
 		this.branches.splice(0, this.branches.length);
-		this.branches.push(...isoBranches);
+		this.branches.push(...isoBranches.map((isoBranch) => this.adaptBranch(isoBranch)));
 	}
-
 	private adaptCommit(isoCommit: ReadCommitResult): Commit {
 		const id = isoCommit.oid;
 		const messageSplit = isoCommit.commit.message.split('\n', 3);
@@ -35,5 +34,9 @@ export class IsoRepository implements Repository {
 		const name = author.name;
 		const email = author.email;
 		return new Person(name, email);
+	}
+
+	private adaptBranch(isoBranch: string): Branch {
+		return new Branch(isoBranch);
 	}
 }

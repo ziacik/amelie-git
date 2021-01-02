@@ -1,3 +1,4 @@
+import { Branch } from '@amelie-git/core';
 import * as fs from 'fs';
 import { listBranches, log, ReadCommitResult } from 'isomorphic-git';
 import { IsoRepository } from './iso-repository';
@@ -46,7 +47,7 @@ describe('IsoRepository', () => {
 			(listBranches as jest.Mock).mockResolvedValue(['branch-a', 'branch-b']);
 			await repository.open();
 			expect(listBranches).toHaveBeenCalledWith({ fs, dir: '/some/path' });
-			expect(repository.branches).toEqual(['branch-a', 'branch-b']);
+			expect(repository.branches).toEqual([new Branch('branch-a'), new Branch('branch-b')]);
 		});
 	});
 });

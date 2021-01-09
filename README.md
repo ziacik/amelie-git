@@ -2,6 +2,12 @@
 
 This project was generated using [Nx](https://nx.dev).
 
+## Schematics
+
+To generate new feature:
+
+`nx workspace-schematic feature some-new-feature`
+
 ## Quick Start & Documentation
 
 [Nx Documentation](https://nx.dev/angular)

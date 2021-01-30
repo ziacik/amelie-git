@@ -1,6 +1,8 @@
 import { Commit, Person } from '@amelie-git/core';
+import { waitFor } from '@amelie-git/testing';
+import { DebugElement } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatListModule } from '@angular/material/list';
+import { MatListModule, MatListOption, MatSelectionList } from '@angular/material/list';
 import { By } from '@angular/platform-browser';
 import { CommitLineComponent } from '../commit-line/commit-line.component';
 import { PositionedCommit } from '../repository/positioned-commit';
@@ -28,6 +30,44 @@ describe('LogViewComponent', () => {
 		component.commits = positionedCommits;
 		fixture.detectChanges();
 		expect(fixture.debugElement.nativeElement.textContent).toContain('commit subject');
+	});
+
+	it('triggers a selection event when a commit line is selected', async () => {
+		const commits = [singleCommit(0)];
+		component.commits = commits;
+		fixture.detectChanges();
+		const lineElement: DebugElement = fixture.debugElement.query(By.directive(CommitLineComponent));
+
+		const commitSelected = await waitFor(component.selectionChange, () => {
+			lineElement.nativeElement.click();
+			fixture.detectChanges();
+		});
+
+		expect(commitSelected).toEqual(commits[0]);
+	});
+
+	xit('triggers a selection event with null commit when a commit line is unselected', async () => {
+		const commits = [singleCommit(0)];
+		component.commits = commits;
+		fixture.detectChanges();
+
+		const lineElement: DebugElement = fixture.debugElement.query(By.directive(CommitLineComponent));
+		const selectionComponent: MatSelectionList = fixture.debugElement
+			.queryAll(By.directive(MatSelectionList))
+			.map((it) => it.componentInstance)[0];
+
+		// lineElement.nativeElement.click();
+		fixture.detectChanges();
+		const alineElement: DebugElement = fixture.debugElement.query(By.directive(MatListOption));
+
+		const commitSelected = await waitFor(component.selectionChange, () => {
+			console.log('gonna click');
+			alineElement.triggerEventHandler('click', { ctrlKey: true });
+			// selectionComponent.deselectAll();
+			fixture.detectChanges();
+		});
+
+		expect(commitSelected).toBeNull();
 	});
 
 	it('sets positionsCount to each line (i.e. max right position of all commits + 1', () => {

@@ -1,4 +1,4 @@
-import { Branch, Commit, Person } from '@amelie-git/core';
+import { Branch, Commit, CommitFile, Person } from '@amelie-git/core';
 import { wait } from '@amelie-git/testing';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -10,6 +10,7 @@ describe('RepositoryService', () => {
 	let electronService: ElectronService;
 	let commits: Commit[];
 	let branches: Branch[];
+	let commitFiles: CommitFile[];
 
 	beforeEach(() => {
 		jest.clearAllMocks();
@@ -19,6 +20,7 @@ describe('RepositoryService', () => {
 			new Commit('id', 'name', 'message', new Person('Amélie', 'amelie@mail'), new Person('Amélie', 'amelie@mail'), []),
 		];
 		branches = [new Branch('master'), new Branch('another')];
+		commitFiles = [new CommitFile("/some/path")];
 		TestBed.configureTestingModule({
 			providers: [ElectronService],
 		});
@@ -30,6 +32,9 @@ describe('RepositoryService', () => {
 			}
 			if (channel === 'get-branches' && args[0] === '/path/to/repository') {
 				return of(branches);
+			}
+			if (channel === 'get-commit-files' && args[0] === '/path/to/repository') {
+				return of(commitFiles);
 			}
 			return throwError(new Error('Some error'));
 		});
@@ -75,6 +80,30 @@ describe('RepositoryService', () => {
 		it('will fail when electron fails', async () => {
 			let err = null;
 			service.getBranches('/unknown/path').subscribe(
+				() => ({}),
+				(e) => (err = e)
+			);
+			await wait();
+			expect(err).toEqual(new Error('Some error'));
+		});
+	});
+
+	describe('getCommitFiles', () => {
+		it('will request a list of commit files from main process', async () => {
+			let result = null;
+			const commit = new Commit('commit-id', null, null, null, null, []);
+			service.getCommitFiles('/path/to/repository', commit).subscribe(
+				(it) => (result = it),
+				(it) => (result = it)
+			);
+			await wait();
+			expect(result).toEqual(commitFiles);
+		});
+
+		it('will fail when electron fails', async () => {
+			let err = null;
+			const commit = new Commit('commit-id', null, null, null, null, []);
+			service.getCommitFiles('/unknown/path', commit).subscribe(
 				() => ({}),
 				(e) => (err = e)
 			);

@@ -1,4 +1,4 @@
-import { Branch, Commit, Person } from '@amelie-git/core';
+import { Branch, Commit, CommitFile, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -8,6 +8,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
 import { AppComponent } from './app.component';
 import { BranchViewComponent } from './branch-view/branch-view.component';
+import { CommitFilesViewComponent } from './commit-files-view/commit-files-view.component';
 import { CommitLineComponent } from './commit-line/commit-line.component';
 import { ElectronService } from './electron.service';
 import { LogViewComponent } from './log-view/log-view.component';
@@ -17,6 +18,7 @@ import { StartPageComponent } from './start-page/start-page.component';
 describe('AppComponent', () => {
 	let commits: Commit[];
 	let branches: Branch[];
+	let commitFiles: CommitFile[];
 	let fixture: ComponentFixture<AppComponent>;
 	let repositoryService: RepositoryService;
 
@@ -24,7 +26,14 @@ describe('AppComponent', () => {
 		await TestBed.configureTestingModule({
 			imports: [NoopAnimationsModule, MatListModule, MatIconModule, MatSidenavModule],
 			providers: [RepositoryService, ElectronService],
-			declarations: [AppComponent, LogViewComponent, CommitLineComponent, BranchViewComponent, StartPageComponent],
+			declarations: [
+				AppComponent,
+				LogViewComponent,
+				CommitLineComponent,
+				BranchViewComponent,
+				StartPageComponent,
+				CommitFilesViewComponent,
+			],
 		}).compileComponents();
 	});
 
@@ -40,9 +49,11 @@ describe('AppComponent', () => {
 			),
 		];
 		branches = [new Branch('master'), new Branch('slave')];
+		commitFiles = [new CommitFile('/some/file')];
 		repositoryService = TestBed.inject(RepositoryService);
 		jest.spyOn(repositoryService, 'getLog').mockReturnValue(of(commits));
 		jest.spyOn(repositoryService, 'getBranches').mockReturnValue(of(branches));
+		jest.spyOn(repositoryService, 'getCommitFiles').mockReturnValue(of(commitFiles));
 		fixture = TestBed.createComponent(AppComponent);
 		fixture.detectChanges();
 	});
@@ -94,6 +105,21 @@ describe('AppComponent', () => {
 				const commitsFromPositionedCommits = positionedCommits.map((it) => it.commit);
 
 				expect(commitsFromPositionedCommits).toEqual(commits);
+			});
+
+			describe('when a commit is selected', () => {
+				it('retrieves and shows a list of commit files for that commit', () => {
+					const commitLine = fixture.debugElement.query(By.directive(CommitLineComponent));
+					commitLine.nativeElement.click();
+
+					fixture.detectChanges();
+
+					const commitFilesView = <CommitFilesViewComponent>(
+						fixture.debugElement.query(By.directive(CommitFilesViewComponent))?.componentInstance
+					);
+					expect(commitFilesView).toBeDefined();
+					expect(commitFilesView.commitFiles).toEqual(commitFiles);
+				});
 			});
 		});
 

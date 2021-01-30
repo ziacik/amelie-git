@@ -1,4 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { MatSelectionListChange } from '@angular/material/list';
 import { PositionedCommit } from '../repository/positioned-commit';
 
 @Component({
@@ -9,6 +10,8 @@ import { PositionedCommit } from '../repository/positioned-commit';
 export class LogViewComponent {
 	private transitionsForCommits: WeakMap<PositionedCommit, number[]>;
 	private _commits: PositionedCommit[] = [];
+
+	@Output() selectionChange: EventEmitter<PositionedCommit> = new EventEmitter();
 
 	@Input() get commits(): PositionedCommit[] {
 		return this._commits;
@@ -63,5 +66,12 @@ export class LogViewComponent {
 
 	transitionsForCommit(commit: PositionedCommit): number[] {
 		return this.transitionsForCommits.get(commit);
+	}
+
+	selectionChanged(change: MatSelectionListChange): void {
+		const option = change.options[0];
+		const selectedId = option.value;
+		const selectedCommit = this._commits.find(c => c.commit.id === selectedId); // todo optimize
+		this.selectionChange.emit(selectedCommit);
 	}
 }

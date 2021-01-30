@@ -10,9 +10,17 @@ import { BranchViewComponent } from './branch-view/branch-view.component';
 import { CommitLineComponent } from './commit-line/commit-line.component';
 import { LogViewComponent } from './log-view/log-view.component';
 import { StartPageComponent } from './start-page/start-page.component';
+import { CommitFilesViewComponent } from './commit-files-view/commit-files-view.component';
 
 @NgModule({
-	declarations: [AppComponent, LogViewComponent, CommitLineComponent, StartPageComponent, BranchViewComponent],
+	declarations: [
+		AppComponent,
+		LogViewComponent,
+		CommitLineComponent,
+		StartPageComponent,
+		BranchViewComponent,
+		CommitFilesViewComponent,
+	],
 	imports: [BrowserModule, BrowserAnimationsModule, MatListModule, MatButtonModule, MatIconModule, MatSidenavModule],
 	providers: [],
 	bootstrap: [AppComponent],

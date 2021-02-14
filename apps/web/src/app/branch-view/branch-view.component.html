@@ -1,5 +1,5 @@
 <div mat-subheader>Branches</div>
-<mat-selection-list #shoes [multiple]="false">
+<mat-selection-list [multiple]="false">
 	<mat-list-option *ngFor="let branch of branches" [value]="branch">
 		<mat-icon mat-list-icon>account_tree</mat-icon>
 		<div mat-line>{{ branch.name }}</div>

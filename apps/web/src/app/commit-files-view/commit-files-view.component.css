@@ -1,0 +1,39 @@
+.invisible {
+	display: none;
+}
+
+ul {
+	padding-inline-start: 20px;
+}
+
+ul,
+li {
+	margin-top: 0;
+	margin-bottom: 0;
+	list-style-type: none;
+}
+
+.mat-tree-node {
+	min-height: 30px;
+}
+
+button {
+	height: 30px;
+	width: 30px;
+	line-height: 30px;
+}
+
+.content {
+	padding: 0 16px;
+	display: flex;
+	align-items: center;
+}
+
+mat-icon {
+	padding: 4px;
+}
+
+mat-tree-node .mat-list-text {
+	padding-left: 0.4em;
+	padding-right: 0.4em;
+}

@@ -1,8 +1,10 @@
 import { Branch, Commit, CommitFile, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatTreeModule } from '@angular/material/tree';
 import { By } from '@angular/platform-browser';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of } from 'rxjs';
@@ -24,7 +26,7 @@ describe('AppComponent', () => {
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
-			imports: [NoopAnimationsModule, MatListModule, MatIconModule, MatSidenavModule],
+			imports: [NoopAnimationsModule, MatListModule, MatIconModule, MatSidenavModule, MatTreeModule, MatRippleModule],
 			providers: [RepositoryService, ElectronService],
 			declarations: [
 				AppComponent,

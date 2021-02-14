@@ -6,7 +6,7 @@
 		"ng": "nx",
 		"postinstall": "exitzero electron-builder install-app-deps",
 		"nx": "nx",
-		"start": "ng serve",
+		"start": "nx serve web & nx serve app",
 		"build": "ng build",
 		"test": "ng test",
 		"lint": "nx workspace-lint && ng lint",

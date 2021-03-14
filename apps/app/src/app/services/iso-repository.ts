@@ -1,22 +1,27 @@
 import { Branch, Commit, CommitFile, Person, Repository } from '@amelie-git/core';
+import { diffLines } from 'diff';
 import * as fs from 'fs';
-import { CommitObject, listBranches, log, ReadCommitResult, TREE, walk, WalkerEntry } from 'isomorphic-git';
+import { CommitObject, listBranches, log, readBlob, ReadCommitResult, TREE, walk, WalkerEntry } from 'isomorphic-git';
+import { resolve } from 'path';
 
 export class IsoRepository implements Repository {
 	readonly commits: Commit[];
 	readonly branches: Branch[];
 
-	constructor(public readonly path: string) {
+	private readonly gitdir: string;
+
+	constructor(public readonly path: string, gitFolder = '.git') {
 		this.commits = [];
 		this.branches = [];
+		this.gitdir = resolve(path, gitFolder);
 	}
 
 	async open(): Promise<void> {
-		const isoCommits = (await log({ fs, dir: this.path })) || [];
+		const isoCommits = (await log({ fs, gitdir: this.gitdir, dir: this.path })) || [];
 		this.commits.splice(0, this.commits.length);
 		this.commits.push(...isoCommits.map((isoCommit) => this.adaptCommit(isoCommit)));
 
-		const isoBranches = (await listBranches({ fs, dir: this.path })) || [];
+		const isoBranches = (await listBranches({ fs, gitdir: this.gitdir, dir: this.path })) || [];
 		this.branches.splice(0, this.branches.length);
 		this.branches.push(...isoBranches.map((isoBranch) => this.adaptBranch(isoBranch)));
 	}
@@ -51,6 +56,7 @@ export class IsoRepository implements Repository {
 		// Get a list of the files that changed
 		const results = await walk({
 			fs,
+			gitdir: this.gitdir,
 			dir: this.path,
 			trees,
 			map: async function (fileName, entries: WalkerEntry[]) {
@@ -80,9 +86,23 @@ export class IsoRepository implements Repository {
 			},
 		});
 
+		return results
+			.filter((it: { fullpath: string }) => it.fullpath)
+			.map((result: { fullpath: string }) => new CommitFile(commit, result.fullpath));
+	}
 
-
-		return results.filter((it: { fullpath: string; }) => it.fullpath).map((result: { fullpath: string }) => new CommitFile(result.fullpath));
+	async getDiff(commitFileA: CommitFile, commitFileB: CommitFile): Promise<string> {
+		const [blobA, blobB] = await Promise.all([
+			commitFileA
+				? readBlob({ fs, gitdir: this.gitdir, dir: this.path, oid: commitFileA.commit.id, filepath: commitFileA.path })
+				: Promise.resolve({ blob: new Uint8Array() }),
+			commitFileB
+				? readBlob({ fs, gitdir: this.gitdir, dir: this.path, oid: commitFileB.commit.id, filepath: commitFileB.path })
+				: Promise.resolve({ blob: new Uint8Array() }),
+		]);
+		const textA = Buffer.from(blobA.blob).toString('utf8');
+		const textB = Buffer.from(blobB.blob).toString('utf8');
+		return diffLines(textA, textB);
 	}
 }
 

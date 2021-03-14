@@ -3,7 +3,7 @@
  * between the frontend to the electron backend.
  */
 
-import { Commit } from '@amelie-git/core';
+import { Commit, CommitFile } from '@amelie-git/core';
 import { app, ipcMain } from 'electron';
 import { environment } from '../../environments/environment';
 import { openRepository } from '../services/app-services';
@@ -48,4 +48,10 @@ ipcMain.handle('get-commit-files', async (_event, path: string, commit: Commit) 
 	const repository = new IsoRepository(path);
 	await repository.open();
 	return repository.getCommitFiles(commit);
+});
+
+ipcMain.handle('get-diff', async (_event, path: string, fileA: CommitFile, fileB: CommitFile) => {
+	const repository = new IsoRepository(path);
+	await repository.open();
+	return repository.getDiff(fileA, fileB);
 });

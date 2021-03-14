@@ -13,6 +13,7 @@ import { CommitFilesViewComponent } from './commit-files-view/commit-files-view.
 import { CommitLineComponent } from './commit-line/commit-line.component';
 import { LogViewComponent } from './log-view/log-view.component';
 import { StartPageComponent } from './start-page/start-page.component';
+import { DiffViewComponent } from './diff-view/diff-view.component';
 
 @NgModule({
 	declarations: [
@@ -22,6 +23,7 @@ import { StartPageComponent } from './start-page/start-page.component';
 		StartPageComponent,
 		BranchViewComponent,
 		CommitFilesViewComponent,
+		DiffViewComponent,
 	],
 	imports: [
 		BrowserModule,

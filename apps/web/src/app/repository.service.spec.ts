@@ -20,7 +20,7 @@ describe('RepositoryService', () => {
 			new Commit('id', 'name', 'message', new Person('Amélie', 'amelie@mail'), new Person('Amélie', 'amelie@mail'), []),
 		];
 		branches = [new Branch('master'), new Branch('another')];
-		commitFiles = [new CommitFile("/some/path")];
+		commitFiles = [new CommitFile(null, "/some/path")];
 		TestBed.configureTestingModule({
 			providers: [ElectronService],
 		});

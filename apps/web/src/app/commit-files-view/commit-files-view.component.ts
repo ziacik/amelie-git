@@ -1,6 +1,6 @@
 import { CommitFile } from '@amelie-git/core';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatTreeFlatDataSource, MatTreeFlattener } from '@angular/material/tree';
 import { CommitFileFlatNode } from './commit-file-flat-node';
 import { CommitFileTreeNode } from './commit-file-tree-node';
@@ -12,6 +12,8 @@ import { CommitFileTreeNode } from './commit-file-tree-node';
 })
 export class CommitFilesViewComponent {
 	rootNode: CommitFileTreeNode;
+
+	@Output() selectionChange: EventEmitter<CommitFile> = new EventEmitter();
 
 	private _commitFiles: CommitFile[];
 
@@ -27,28 +29,29 @@ export class CommitFilesViewComponent {
 		this.treeControl.expandAll();
 	}
 
-	private transformer: (node: CommitFileTreeNode, level: number) => CommitFileFlatNode = (
-		node: CommitFileTreeNode,
-		level: number
-	) => ({
-		expandable: !!node.children && node.children.length > 0,
-		name: node.name,
-		level: level,
-	});
+	private transformer(node: CommitFileTreeNode, level: number): CommitFileFlatNode {
+		return {
+			expandable: !!node.children && node.children.length > 0,
+			name: node.name,
+			file: node.file,
+			level: level,
+			selected: false,
+		};
+	}
 
-	private treeFlattener = new MatTreeFlattener(
+	private readonly treeFlattener = new MatTreeFlattener(
 		this.transformer,
 		(node) => node.level,
 		(node) => node.expandable,
 		(node) => node.children
 	);
 
-	treeControl = new FlatTreeControl<CommitFileFlatNode>(
+	readonly treeControl = new FlatTreeControl<CommitFileFlatNode>(
 		(node) => node.level,
 		(node) => node.expandable
 	);
 
-	dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+	readonly dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
 	hasChild(_: number, node: CommitFileFlatNode): boolean {
 		return node.expandable;
@@ -61,17 +64,28 @@ export class CommitFilesViewComponent {
 			const unrootedPath = file.path.startsWith('/') ? file.path.substr(1) : file.path;
 			const pathParts = unrootedPath.split('/');
 			let currentLevelNodes = this.rootNode.children;
-			for (const pathPart of pathParts) {
+			for (const [i, pathPart] of pathParts.entries()) {
 				const existingNode: CommitFileTreeNode = currentLevelNodes.find((it) => it.name === pathPart);
 
 				if (existingNode) {
 					currentLevelNodes = existingNode.children;
 				} else {
-					const newNode = new CommitFileTreeNode(pathPart);
+					const isLeaf = i === pathParts.length - 1;
+					const newNode = new CommitFileTreeNode(pathPart, isLeaf ? file : undefined);
 					currentLevelNodes.push(newNode);
 					currentLevelNodes = newNode.children;
 				}
 			}
 		}
+	}
+
+	toggleSelection(node: CommitFileFlatNode): void {
+		this.selectionChange.emit(node.file);
+		this.deselectAllNodes();
+		node.selected = true;
+	}
+
+	private deselectAllNodes(): void {
+		this.treeControl.dataNodes.forEach((node) => (node.selected = false));
 	}
 }

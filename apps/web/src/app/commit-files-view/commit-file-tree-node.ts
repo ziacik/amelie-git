@@ -1,9 +1,13 @@
+import { CommitFile } from '@amelie-git/core';
+
 export class CommitFileTreeNode {
 	name: string;
+	file: CommitFile;
 	children: CommitFileTreeNode[];
 
-	constructor(name: string) {
+	constructor(name: string, file?: CommitFile) {
 		this.name = name;
+		this.file = file;
 		this.children = [];
 	}
 

@@ -51,7 +51,7 @@ describe('AppComponent', () => {
 			),
 		];
 		branches = [new Branch('master'), new Branch('slave')];
-		commitFiles = [new CommitFile('/some/file')];
+		commitFiles = [new CommitFile(null, '/some/file')];
 		repositoryService = TestBed.inject(RepositoryService);
 		jest.spyOn(repositoryService, 'getLog').mockReturnValue(of(commits));
 		jest.spyOn(repositoryService, 'getBranches').mockReturnValue(of(branches));

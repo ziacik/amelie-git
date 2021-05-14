@@ -6,10 +6,12 @@
 		matTreeNodePaddingIndent="30"
 		matRipple
 		class="mat-list-option"
+		[class.mat-list-single-selected-option]="node.selected"
+		(click)="toggleSelection(node)"
 	>
 		<div class="content">
 			<mat-icon class="mat-icon-rtl-mirror">text_snippet</mat-icon>
-			<div class="mat-list-text">{{ node.name }}</div>
+			<div class="mat-list-text file">{{ node.name }}</div>
 		</div>
 	</mat-tree-node>
 	<mat-tree-node
@@ -22,7 +24,7 @@
 	>
 		<div class="content">
 			<mat-icon class="mat-icon-rtl-mirror">folder</mat-icon>
-			<div class="mat-list-text">{{ node.name }}</div>
+			<div class="mat-list-text folder">{{ node.name }}</div>
 		</div>
 	</mat-tree-node>
 </mat-tree>

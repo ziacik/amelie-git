@@ -4,3 +4,4 @@ export * from './lib/commit-file';
 export * from './lib/core.module';
 export * from './lib/person';
 export * from './lib/repository';
+export * from './lib/diff';

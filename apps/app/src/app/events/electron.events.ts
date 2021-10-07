@@ -3,7 +3,7 @@
  * between the frontend to the electron backend.
  */
 
-import { Commit } from '@amelie-git/core';
+import { Commit, CommitFile } from '@amelie-git/core';
 import { app, ipcMain } from 'electron';
 import { environment } from '../../environments/environment';
 import { openRepository } from '../services/app-services';
@@ -27,25 +27,30 @@ ipcMain.on('quit', (event, code) => {
 	app.exit(code);
 });
 
+let repository: IsoRepository;
+
+
+
 // todo should not always create IsoRepository
 ipcMain.handle('get-log', async (_event, path: string) => {
-	const repository = new IsoRepository(path);
-	await repository.open();
 	return repository.commits;
 });
 
 ipcMain.handle('get-branches', async (_event, path: string) => {
-	const repository = new IsoRepository(path);
-	await repository.open();
 	return repository.branches;
 });
 
 ipcMain.handle('open-repository', async () => {
-	return openRepository();
+	const path = await openRepository();
+	repository = new IsoRepository(path);
+	await repository.open();
+	return path;
 });
 
 ipcMain.handle('get-commit-files', async (_event, path: string, commit: Commit) => {
-	const repository = new IsoRepository(path);
-	await repository.open();
 	return repository.getCommitFiles(commit);
+});
+
+ipcMain.handle('get-diff', async (_event, path: string, fileA: CommitFile, fileB: CommitFile) => {
+	return null; // repository.getDiff(fileA, fileB);
 });

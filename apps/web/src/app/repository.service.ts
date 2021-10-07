@@ -1,4 +1,4 @@
-import { Branch, Commit, CommitFile } from '@amelie-git/core';
+import { Branch, Commit, CommitFile, Diff } from '@amelie-git/core';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ElectronService } from './electron.service';
@@ -19,5 +19,9 @@ export class RepositoryService {
 
 	getCommitFiles(pathToRepository: string, commit: Commit): Observable<CommitFile[]> {
 		return this.electronService.invoke('get-commit-files', pathToRepository, commit);
+	}
+
+	getDiff(pathToRepository: string): Observable<Diff[]> {
+		return this.electronService.invoke('get-diff', pathToRepository);
 	}
 }

@@ -41,7 +41,7 @@
 		"@angular/router": "^10.1.0",
 		"@ngneat/until-destroy": "^8.0.3",
 		"@nrwl/angular": "10.3.3",
-		"isomorphic-git": "^1.8.0",
+		"isomorphic-git": "^1.7.4",
 		"rxjs": "~6.5.5",
 		"zone.js": "^0.10.2"
 	},

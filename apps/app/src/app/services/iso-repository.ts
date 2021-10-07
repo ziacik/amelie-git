@@ -1,22 +1,30 @@
 import { Branch, Commit, CommitFile, Person, Repository } from '@amelie-git/core';
 import * as fs from 'fs';
-import { CommitObject, listBranches, log, ReadCommitResult, TREE, walk, WalkerEntry } from 'isomorphic-git';
+import { CommitObject, listBranches, log, ReadCommitResult, statusMatrix, TREE, walk, WalkerEntry } from 'isomorphic-git';
 
 export class IsoRepository implements Repository {
 	readonly commits: Commit[];
 	readonly branches: Branch[];
 
+	private readonly cache: Record<string, unknown>;
+
 	constructor(public readonly path: string) {
 		this.commits = [];
 		this.branches = [];
+		this.cache = {};
 	}
 
 	async open(): Promise<void> {
-		const isoCommits = (await log({ fs, dir: this.path })) || [];
+		console.log('OPEN');
+		console.time('open 1');
+		const isoCommits = (await log({ fs, dir: this.path, cache: this.cache })) || [];
+		console.timeEnd('open 1');
 		this.commits.splice(0, this.commits.length);
 		this.commits.push(...isoCommits.map((isoCommit) => this.adaptCommit(isoCommit)));
 
+		console.time('open 2');
 		const isoBranches = (await listBranches({ fs, dir: this.path })) || [];
+		console.timeEnd('open 2');
 		this.branches.splice(0, this.branches.length);
 		this.branches.push(...isoBranches.map((isoBranch) => this.adaptBranch(isoBranch)));
 	}
@@ -42,6 +50,10 @@ export class IsoRepository implements Repository {
 	}
 
 	async getCommitFiles(commit: Commit): Promise<CommitFile[]> {
+		await this.test();
+
+		console.time('gcf');
+
 		const ourCommitTree = TREE({ ref: commit.id });
 		/// We'll only take the first parent (branch parent) so even merge commits are compared to their single previous commit on a branch.
 		const parentTrees = commit.parentIds.slice(0, 1).map((parentId) => TREE({ ref: parentId }));
@@ -52,6 +64,7 @@ export class IsoRepository implements Repository {
 		const results = await walk({
 			fs,
 			dir: this.path,
+			cache: this.cache,
 			trees,
 			map: async function (fileName, entries: WalkerEntry[]) {
 				const entryTypes = await Promise.all(entries.map((entry) => entry?.type()));
@@ -80,9 +93,22 @@ export class IsoRepository implements Repository {
 			},
 		});
 
+		console.timeEnd('gcf');
 
+		console.log(this.cache);
 
-		return results.filter((it: { fullpath: string; }) => it.fullpath).map((result: { fullpath: string }) => new CommitFile(result.fullpath));
+		return results
+			.filter((it: { fullpath: string }) => it.fullpath)
+			.map((result: { fullpath: string }) => new CommitFile(result.fullpath));
+	}
+
+	private async test(): Promise<void> {
+		console.time(`time elapsed`);
+		const matrix = await statusMatrix({ fs, dir: this.path, cache: this.cache });
+		// for (const [filepath, head, workdir, stage] of matrix) {
+		// 	console.log(`${filepath}: ${head} ${workdir} ${stage}`);
+		// }
+		console.timeEnd(`time elapsed`);
 	}
 }
 

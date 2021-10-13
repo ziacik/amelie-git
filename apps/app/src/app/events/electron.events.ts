@@ -7,7 +7,7 @@ import { Commit, CommitFile } from '@amelie-git/core';
 import { app, ipcMain } from 'electron';
 import { environment } from '../../environments/environment';
 import { openRepository } from '../services/app-services';
-import { IsoRepository } from '../services/iso-repository';
+import { GitRepository } from '../services/git-repository';
 
 export default class ElectronEvents {
 	static bootstrapElectronEvents(): Electron.IpcMain {
@@ -27,15 +27,15 @@ ipcMain.on('quit', (event, code) => {
 	app.exit(code);
 });
 
-// todo should not always create IsoRepository
+// todo should not always create Repository
 ipcMain.handle('get-log', async (_event, path: string) => {
-	const repository = new IsoRepository(path);
+	const repository = new GitRepository(path);
 	await repository.open();
 	return repository.commits;
 });
 
 ipcMain.handle('get-branches', async (_event, path: string) => {
-	const repository = new IsoRepository(path);
+	const repository = new GitRepository(path);
 	await repository.open();
 	return repository.branches;
 });
@@ -45,13 +45,13 @@ ipcMain.handle('open-repository', async () => {
 });
 
 ipcMain.handle('get-commit-files', async (_event, path: string, commit: Commit) => {
-	const repository = new IsoRepository(path);
+	const repository = new GitRepository(path);
 	await repository.open();
 	return repository.getCommitFiles(commit);
 });
 
 ipcMain.handle('get-diff', async (_event, path: string, fileA: CommitFile, fileB: CommitFile) => {
-	const repository = new IsoRepository(path);
+	const repository = new GitRepository(path);
 	await repository.open();
 	return repository.getDiff(fileA, fileB);
 });

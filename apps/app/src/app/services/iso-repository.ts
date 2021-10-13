@@ -1,5 +1,5 @@
 import { Branch, Commit, CommitFile, Person, Repository } from '@amelie-git/core';
-import { diffLines } from 'diff';
+import { Change, diffLines } from 'diff';
 import * as fs from 'fs';
 import { CommitObject, listBranches, log, readBlob, ReadCommitResult, TREE, walk, WalkerEntry } from 'isomorphic-git';
 import { resolve } from 'path';
@@ -91,7 +91,7 @@ export class IsoRepository implements Repository {
 			.map((result: { fullpath: string }) => new CommitFile(commit, result.fullpath));
 	}
 
-	async getDiff(commitFileA: CommitFile, commitFileB: CommitFile): Promise<string> {
+	async getDiff(commitFileA: CommitFile, commitFileB: CommitFile): Promise<Change[]> {
 		const [blobA, blobB] = await Promise.all([
 			commitFileA
 				? readBlob({ fs, gitdir: this.gitdir, dir: this.path, oid: commitFileA.commit.id, filepath: commitFileA.path })

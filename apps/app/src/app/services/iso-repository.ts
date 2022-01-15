@@ -1,7 +1,17 @@
-import { Branch, Commit, CommitFile, Person, Repository } from '@amelie-git/core';
+import { Branch, Commit, CommitFile, NULL_COMMIT_FILE, Person, Repository } from '@amelie-git/core';
 import { Change, diffLines } from 'diff';
 import * as fs from 'fs';
-import { CommitObject, listBranches, log, readBlob, ReadCommitResult, TREE, walk, WalkerEntry } from 'isomorphic-git';
+import {
+	CommitObject,
+	listBranches,
+	log,
+	readBlob,
+	ReadCommitResult,
+	TREE,
+	walk,
+	WalkerEntry,
+	WalkerMap,
+} from 'isomorphic-git';
 import { resolve } from 'path';
 
 export class IsoRepository implements Repository {
@@ -53,37 +63,40 @@ export class IsoRepository implements Repository {
 
 		const trees = [ourCommitTree, ...parentTrees];
 
+		const map: WalkerMap = async function (fileName, entriesOrNull: WalkerEntry[] | null) {
+			const entries = entriesOrNull ?? [];
+			const entryTypes = await Promise.all(entries.map((entry) => entry?.type()));
+			const fileEntries = entries.map((entry, i) => (entryTypes[i] === 'blob' ? entry : undefined));
+			const [ourEntry, parentEntry] = fileEntries;
+
+			if (!ourEntry && !parentEntry) {
+				return {};
+			}
+
+			if (!ourEntry) {
+				return { fullpath: fileName };
+			}
+
+			if (!parentEntry) {
+				return { fullpath: fileName };
+			}
+
+			const contents = await Promise.all(entries.map((entry) => entry.content()));
+
+			if (equal(contents[0] as Uint8Array, contents[1] as Uint8Array)) {
+				return null;
+			}
+
+			return { fullpath: fileName };
+		};
+
 		// Get a list of the files that changed
 		const results = await walk({
 			fs,
 			gitdir: this.gitdir,
 			dir: this.path,
 			trees,
-			map: async function (fileName, entries: WalkerEntry[]) {
-				const entryTypes = await Promise.all(entries.map((entry) => entry?.type()));
-				const fileEntries = entries.map((entry, i) => (entryTypes[i] === 'blob' ? entry : undefined));
-				const [ourEntry, parentEntry] = fileEntries;
-
-				if (!ourEntry && !parentEntry) {
-					return {};
-				}
-
-				if (!ourEntry) {
-					return { fullpath: fileName };
-				}
-
-				if (!parentEntry) {
-					return { fullpath: fileName };
-				}
-
-				const contents = await Promise.all(entries.map((entry) => entry.content()));
-
-				if (equal(contents[0] as Uint8Array, contents[1] as Uint8Array)) {
-					return null;
-				}
-
-				return { fullpath: fileName };
-			},
+			map,
 		});
 
 		return results
@@ -93,10 +106,10 @@ export class IsoRepository implements Repository {
 
 	async getDiff(commitFileA: CommitFile, commitFileB: CommitFile): Promise<Change[]> {
 		const [blobA, blobB] = await Promise.all([
-			commitFileA
+			commitFileA !== NULL_COMMIT_FILE
 				? readBlob({ fs, gitdir: this.gitdir, dir: this.path, oid: commitFileA.commit.id, filepath: commitFileA.path })
 				: Promise.resolve({ blob: new Uint8Array() }),
-			commitFileB
+			commitFileB !== NULL_COMMIT_FILE
 				? readBlob({ fs, gitdir: this.gitdir, dir: this.path, oid: commitFileB.commit.id, filepath: commitFileB.path })
 				: Promise.resolve({ blob: new Uint8Array() }),
 		]);

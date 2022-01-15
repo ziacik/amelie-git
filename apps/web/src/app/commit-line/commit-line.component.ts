@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { PositionedCommit } from '../repository/positioned-commit';
+import { NULL_POSITIONED_COMMIT, PositionedCommit } from '../repository/positioned-commit';
 
 export type ColorIndex = number;
 export type Position = number;
@@ -18,11 +18,11 @@ export type Line = {
 	styleUrls: ['./commit-line.component.scss'],
 })
 export class CommitLineComponent implements OnInit {
-	@Input() positionedCommit: PositionedCommit;
-	@Input() transitions: number[];
-	@Input() positionsCount: number;
+	@Input() positionedCommit: PositionedCommit = NULL_POSITIONED_COMMIT;
+	@Input() transitions: number[] = [];
+	@Input() positionsCount = 0;
 
-	lines: Line[];
+	lines: Line[] = [];
 	colors: string[] = ['#0092cc', '#ff3333', '#dcd427', '#779933'];
 
 	ngOnInit(): void {

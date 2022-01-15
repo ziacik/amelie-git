@@ -1,4 +1,4 @@
-import { Branch, Commit, CommitFile, Person, Repository } from '@amelie-git/core';
+import { Branch, Commit, CommitFile, NULL_COMMIT_FILE, NULL_PERSON, Person, Repository } from '@amelie-git/core';
 import { spawn } from 'child_process';
 import { Change, diffLines } from 'diff';
 
@@ -35,12 +35,14 @@ export class GitRepository implements Repository {
 	}
 
 	async getDiff(commitFileA: CommitFile, commitFileB: CommitFile): Promise<Change[]> {
-		const fileAContents = commitFileA
-			? await git(this.path, ...this.commonArgs, 'show', `${commitFileA.commit.id}:${commitFileA.path}`)
-			: '';
-		const fileBContents = commitFileB
-			? await git(this.path, ...this.commonArgs, 'show', `${commitFileB.commit.id}:${commitFileB.path}`)
-			: '';
+		const fileAContents =
+			commitFileA !== NULL_COMMIT_FILE
+				? await git(this.path, ...this.commonArgs, 'show', `${commitFileA.commit.id}:${commitFileA.path}`)
+				: '';
+		const fileBContents =
+			commitFileB !== NULL_COMMIT_FILE
+				? await git(this.path, ...this.commonArgs, 'show', `${commitFileB.commit.id}:${commitFileB.path}`)
+				: '';
 		return diffLines(fileAContents, fileBContents);
 	}
 
@@ -84,7 +86,7 @@ async function git(cwd: string, ...args: string[]): Promise<string> {
 }
 
 function splitToCommits(lines: string[]): string[][] {
-	const commitStartLines = lines.reduce((result, line, i) => {
+	const commitStartLines = lines.reduce((result: number[], line: string, i: number) => {
 		if (line.startsWith('commit ')) {
 			return [...result, i];
 		} else {
@@ -111,13 +113,13 @@ function parseCommitLines(lines: string[]): Commit {
 }
 
 function findKeywordValue(lines: string[], keyword: string): string {
-	const line = lines.find((line) => line.startsWith(keyword + ' '));
+	const line = lines.find((line) => line.startsWith(keyword + ' ')) || '';
 	return line.substr(keyword.length + 1);
 }
 
 function parsePerson(nameMail: string): Person {
 	if (!nameMail) {
-		return null;
+		return NULL_PERSON;
 	}
 	const authorRegex = /^(.*) <(.*)>$/;
 	const [, name, mail] = nameMail.match(authorRegex) || [];

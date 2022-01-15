@@ -1,11 +1,15 @@
 import { Commit } from '@amelie-git/core';
 import { Injectable } from '@angular/core';
-import { PositionedCommit } from './positioned-commit';
+import { NULL_POSITIONED_COMMIT, PositionedCommit } from './positioned-commit';
 
 type Position = number;
 type TakenPositionDescriptor = {
 	commit: PositionedCommit;
 	stop?: boolean;
+};
+
+const NULL_TAKEN_POSITION: TakenPositionDescriptor = {
+	commit: NULL_POSITIONED_COMMIT,
 };
 
 @Injectable({
@@ -19,7 +23,7 @@ export class CommitPositioningService {
 }
 
 class CommitPositioner {
-	private takenPositions: TakenPositionDescriptor[];
+	private takenPositions: TakenPositionDescriptor[] = [];
 
 	constructor(public readonly commits: Commit[]) {}
 
@@ -80,7 +84,7 @@ class CommitPositioner {
 		for (let i = 0; i < this.takenPositions.length; i++) {
 			const takenPosition = this.takenPositions[i];
 			if (takenPosition?.stop && this.takenPositions[i]?.commit === positionedCommit) {
-				this.takenPositions[i] = null;
+				this.takenPositions[i] = NULL_TAKEN_POSITION;
 			}
 		}
 	}
@@ -90,7 +94,7 @@ class CommitPositioner {
 	}
 
 	private firstFreePosition(): Position {
-		const freePosition = this.takenPositions.indexOf(null);
+		const freePosition = this.takenPositions.indexOf(NULL_TAKEN_POSITION);
 		return freePosition >= 0 ? freePosition : this.takenPositions.length;
 	}
 

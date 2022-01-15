@@ -8,7 +8,7 @@ import { PositionedCommit } from '../repository/positioned-commit';
 	styleUrls: ['./log-view.component.scss'],
 })
 export class LogViewComponent {
-	private transitionsForCommits: WeakMap<PositionedCommit, number[]>;
+	private transitionsForCommits: WeakMap<PositionedCommit, number[]> = new WeakMap<PositionedCommit, number[]>();
 	private _commits: PositionedCommit[] = [];
 
 	@Output() selectionChange: EventEmitter<PositionedCommit> = new EventEmitter();
@@ -22,7 +22,7 @@ export class LogViewComponent {
 		this.calculate();
 	}
 
-	positionsCount: number;
+	positionsCount = 0;
 
 	private calculate(): void {
 		this.positionsCount = 0;
@@ -65,13 +65,13 @@ export class LogViewComponent {
 	}
 
 	transitionsForCommit(commit: PositionedCommit): number[] {
-		return this.transitionsForCommits.get(commit);
+		return this.transitionsForCommits.get(commit) || [];
 	}
 
 	selectionChanged(change: MatSelectionListChange): void {
 		const option = change.options[0];
 		const selectedId = option.value;
-		const selectedCommit = this._commits.find(c => c.commit.id === selectedId); // todo optimize
+		const selectedCommit = this._commits.find((c) => c.commit.id === selectedId); // todo optimize
 		this.selectionChange.emit(selectedCommit);
 	}
 }

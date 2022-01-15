@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Injectable } from '@angular/core';
 import { from, Observable } from 'rxjs';
 
@@ -6,16 +5,16 @@ import { from, Observable } from 'rxjs';
 	providedIn: 'root',
 })
 export class ElectronService {
-	private electronCached: any;
+	private electronCached: Electron.RendererInterface | undefined;
 
-	private get electron(): any {
+	private get electron(): Electron.RendererInterface | undefined {
 		if (!this.electronCached) {
-			this.electronCached = (<any>window).require('electron');
+			this.electronCached = globalThis.require('electron');
 		}
 		return this.electronCached;
 	}
 
-	invoke<T extends any>(channel: string, ...args: any[]): Observable<T> {
-		return from(<Promise<T>>this.electron.ipcRenderer.invoke(channel, ...args));
+	invoke<T>(channel: string, ...args: unknown[]): Observable<T> {
+		return from(<Promise<T>>this.electron?.ipcRenderer.invoke(channel, ...args));
 	}
 }

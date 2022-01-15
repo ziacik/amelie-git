@@ -1,6 +1,6 @@
 import { Commit, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { PositionedCommit } from '../repository/positioned-commit';
+import { NULL_POSITIONED_COMMIT, PositionedCommit } from '../repository/positioned-commit';
 import { ColorIndex, CommitLineComponent, Line } from './commit-line.component';
 
 describe('CommitLineComponent', () => {
@@ -215,6 +215,6 @@ function commitWithMergeChildren(position: number, childPositions: number[]): Po
 	const commit = singleCommit(position);
 	commit.children.push(...childPositions.map(singleCommit));
 	// Note that a child is a "merge" child if our commit is not its first parent.
-	commit.children.forEach((child) => child.parents.push(null, commit));
+	commit.children.forEach((child) => child.parents.push(NULL_POSITIONED_COMMIT, commit));
 	return commit;
 }

@@ -11,18 +11,18 @@ import { CommitFileTreeNode } from './commit-file-tree-node';
 	styleUrls: ['./commit-files-view.component.css'],
 })
 export class CommitFilesViewComponent {
-	rootNode: CommitFileTreeNode;
+	rootNode: CommitFileTreeNode = new CommitFileTreeNode('');
 
 	@Output() selectionChange: EventEmitter<CommitFile> = new EventEmitter();
 
-	private _commitFiles: CommitFile[];
+	private commitFilesValue: CommitFile[] = [];
 
 	get commitFiles(): CommitFile[] {
-		return this._commitFiles;
+		return this.commitFilesValue;
 	}
 
 	@Input() set commitFiles(value: CommitFile[]) {
-		this._commitFiles = value;
+		this.commitFilesValue = value;
 		this.calculateTree();
 		this.rootNode.reduce();
 		this.dataSource.data = this.rootNode.children;
@@ -65,7 +65,7 @@ export class CommitFilesViewComponent {
 			const pathParts = unrootedPath.split('/');
 			let currentLevelNodes = this.rootNode.children;
 			for (const [i, pathPart] of pathParts.entries()) {
-				const existingNode: CommitFileTreeNode = currentLevelNodes.find((it) => it.name === pathPart);
+				const existingNode: CommitFileTreeNode | undefined = currentLevelNodes.find((it) => it.name === pathPart);
 
 				if (existingNode) {
 					currentLevelNodes = existingNode.children;

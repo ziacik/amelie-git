@@ -1,4 +1,4 @@
-import { Commit } from '@amelie-git/core';
+import { Commit, NULL_PERSON } from '@amelie-git/core';
 import { TestBed } from '@angular/core/testing';
 import { CommitPositioningService } from './commit-positioning.service';
 
@@ -119,5 +119,5 @@ describe('CommitPositioningService', () => {
 });
 
 function commit(id: string, parentIds: string[] = []): Commit {
-	return new Commit(id, id, null, null, null, parentIds);
+	return new Commit(id, id, '', NULL_PERSON, NULL_PERSON, parentIds);
 }

@@ -1,6 +1,6 @@
 import { Branch, Commit, CommitFile } from '@amelie-git/core';
 import { AfterViewInit, Component } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import { RepositoryService } from './repository.service';
 import { CommitPositioningService } from './repository/commit-positioning.service';
@@ -14,10 +14,10 @@ import { PositionedCommit } from './repository/positioned-commit';
 export class AppComponent implements AfterViewInit {
 	title = 'Amelie Git';
 
-	repository: string;
-	commits$: Observable<PositionedCommit[]>;
-	branches$: Observable<Branch[]>;
-	commitFiles$: Observable<CommitFile[]>;
+	repository = '';
+	commits$: Observable<PositionedCommit[]> = of([]);
+	branches$: Observable<Branch[]> = of([]);
+	commitFiles$: Observable<CommitFile[]> = of([]);
 
 	private selectedCommit$: Subject<Commit>;
 

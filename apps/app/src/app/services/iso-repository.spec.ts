@@ -1,4 +1,4 @@
-import { Branch, CommitFile } from '@amelie-git/core';
+import { Branch, CommitFile, NULL_COMMIT_FILE } from '@amelie-git/core';
 import { resolve } from 'path';
 import { IsoRepository } from './iso-repository';
 
@@ -103,7 +103,7 @@ describe('IsoRepository', () => {
 
 		it('will return the text of newly added commit file as an addition', async () => {
 			await repository.open();
-			const fileA = null;
+			const fileA = NULL_COMMIT_FILE;
 			const fileB = new CommitFile(repository.commits[repository.commits.length - 3], 'new.txt');
 			const diff = await repository.getDiff(fileA, fileB);
 			expect(diff).toEqual([
@@ -119,7 +119,7 @@ describe('IsoRepository', () => {
 		it('will return the text of removed commit file as a removal', async () => {
 			await repository.open();
 			const fileA = new CommitFile(repository.commits[repository.commits.length - 2], 'deleted.txt');
-			const fileB = null;
+			const fileB = NULL_COMMIT_FILE;
 			const diff = await repository.getDiff(fileA, fileB);
 			expect(diff).toEqual([
 				{

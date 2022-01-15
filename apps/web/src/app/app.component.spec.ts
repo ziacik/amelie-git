@@ -1,4 +1,4 @@
-import { Branch, Commit, CommitFile, Person } from '@amelie-git/core';
+import { Branch, Commit, CommitFile, NULL_COMMIT, Person } from '@amelie-git/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatRippleModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
@@ -51,7 +51,7 @@ describe('AppComponent', () => {
 			),
 		];
 		branches = [new Branch('master'), new Branch('slave')];
-		commitFiles = [new CommitFile(null, '/some/file')];
+		commitFiles = [new CommitFile(NULL_COMMIT, '/some/file')];
 		repositoryService = TestBed.inject(RepositoryService);
 		jest.spyOn(repositoryService, 'getLog').mockReturnValue(of(commits));
 		jest.spyOn(repositoryService, 'getBranches').mockReturnValue(of(branches));

@@ -1,11 +1,11 @@
-import { CommitFile } from '@amelie-git/core';
+import { CommitFile, NULL_COMMIT_FILE } from '@amelie-git/core';
 
 export class CommitFileTreeNode {
 	name: string;
 	file: CommitFile;
 	children: CommitFileTreeNode[];
 
-	constructor(name: string, file?: CommitFile) {
+	constructor(name: string, file: CommitFile = NULL_COMMIT_FILE) {
 		this.name = name;
 		this.file = file;
 		this.children = [];
@@ -26,7 +26,7 @@ export class CommitFileTreeNode {
 
 	private mergeWithSingleChild(): boolean {
 		const isRoot = this.name === '.';
-		const singleChild = this.children.length === 1 && this.children[0];
+		const singleChild = this.children.length === 1 ? this.children[0] : null;
 		const isSingleChildLeaf = singleChild?.children?.length === 0;
 
 		if (!isRoot && singleChild && !isSingleChildLeaf) {

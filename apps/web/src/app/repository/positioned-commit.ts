@@ -1,4 +1,4 @@
-import { Commit } from '@amelie-git/core';
+import { Commit, NULL_COMMIT } from '@amelie-git/core';
 
 export class PositionedCommit {
 	constructor(
@@ -8,3 +8,5 @@ export class PositionedCommit {
 		public readonly children: PositionedCommit[]
 	) {}
 }
+
+export const NULL_POSITIONED_COMMIT = new PositionedCommit(0, NULL_COMMIT, [], []);

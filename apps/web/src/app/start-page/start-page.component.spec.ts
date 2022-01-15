@@ -38,7 +38,7 @@ describe('StartPageComponent', () => {
 		});
 
 		it('emits an repositoryOpened event if the result is not empty', () => {
-			let repositoryOpenedValue: string = undefined;
+			let repositoryOpenedValue: string | undefined = undefined;
 			component.repositoryOpened.subscribe((value: string) => (repositoryOpenedValue = value));
 			const button = fixture.debugElement.query(By.css('#open-repository')).nativeElement;
 			button.click();

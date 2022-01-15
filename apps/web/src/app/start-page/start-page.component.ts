@@ -16,8 +16,8 @@ export class StartPageComponent {
 
 	openRepository(): void {
 		this.electronService
-			.invoke('open-repository')
-			.pipe(untilDestroyed(this), filter(Boolean))
+			.invoke<string>('open-repository')
+			.pipe<string, string>(untilDestroyed(this), filter<string>(Boolean))
 			.subscribe((value: string) => this.repositoryOpened.emit(value));
 	}
 }

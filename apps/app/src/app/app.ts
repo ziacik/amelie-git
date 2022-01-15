@@ -1,19 +1,19 @@
-import { BrowserWindow, shell, screen } from 'electron';
-import { rendererAppName, rendererAppPort } from './constants';
-import { environment } from '../environments/environment';
+import { BrowserWindow, screen, shell } from 'electron';
 import { join } from 'path';
 import { format } from 'url';
+import { environment } from '../environments/environment';
+import { rendererAppName, rendererAppPort } from './constants';
 
 export default class App {
 	// Keep a global reference of the window object, if you don't, the window will
 	// be closed automatically when the JavaScript object is garbage collected.
 	static mainWindow: Electron.BrowserWindow;
 	static application: Electron.App;
-	static BrowserWindow;
+	static BrowserWindow: typeof BrowserWindow;
 
 	public static isDevelopmentMode(): boolean {
 		const isEnvironmentSet: boolean = 'ELECTRON_IS_DEV' in process.env;
-		const getFromEnvironment: boolean = parseInt(process.env.ELECTRON_IS_DEV, 10) === 1;
+		const getFromEnvironment: boolean = parseInt(process.env.ELECTRON_IS_DEV || '', 10) === 1;
 
 		return isEnvironmentSet ? getFromEnvironment : !environment.production;
 	}
@@ -28,7 +28,7 @@ export default class App {
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
-		App.mainWindow = null;
+		// TODO App.mainWindow = null;
 	}
 
 	private static onRedirect(event: Event, url: string): void {

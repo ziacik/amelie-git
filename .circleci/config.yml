@@ -1,7 +1,21 @@
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
-workflows:
-  node-tests:
-    jobs:
-      - node/test
+  nx: nrwl/nx@1.1.0
+jobs:
+  build:
+    docker:
+      - image: 'cimg/node:14.17-browsers'
+    steps:
+      - checkout
+      - run:
+          command: npm ci
+          name: Install dependencies
+      - nx/set-shas:
+          error-on-no-successful-workflow: true
+          main-branch-name: master
+      - run:
+          command: npx nx affected --target=build --base=$NX_BASE
+          name: Run Builds
+      - run:
+          command: npx nx affected --target=test --base=$NX_BASE
+          name: Run Unit Tests

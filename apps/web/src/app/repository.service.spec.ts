@@ -1,4 +1,4 @@
-import { Branch, Commit, CommitFile, Person } from '@amelie-git/core';
+import { Branch, Commit, CommitFile, NULL_PERSON, Person } from '@amelie-git/core';
 import { wait } from '@amelie-git/testing';
 import { TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
@@ -20,7 +20,7 @@ describe('RepositoryService', () => {
 			new Commit('id', 'name', 'message', new Person('Amélie', 'amelie@mail'), new Person('Amélie', 'amelie@mail'), []),
 		];
 		branches = [new Branch('master'), new Branch('another')];
-		commitFiles = [new CommitFile(null, "/some/path")];
+		commitFiles = [new CommitFile(commits[0], '/some/path')];
 		TestBed.configureTestingModule({
 			providers: [ElectronService],
 		});
@@ -91,7 +91,7 @@ describe('RepositoryService', () => {
 	describe('getCommitFiles', () => {
 		it('will request a list of commit files from main process', async () => {
 			let result = null;
-			const commit = new Commit('commit-id', null, null, null, null, []);
+			const commit = new Commit('commit-id', '', '', NULL_PERSON, NULL_PERSON, []);
 			service.getCommitFiles('/path/to/repository', commit).subscribe(
 				(it) => (result = it),
 				(it) => (result = it)
@@ -102,7 +102,7 @@ describe('RepositoryService', () => {
 
 		it('will fail when electron fails', async () => {
 			let err = null;
-			const commit = new Commit('commit-id', null, null, null, null, []);
+			const commit = new Commit('commit-id', '', '', NULL_PERSON, NULL_PERSON, []);
 			service.getCommitFiles('/unknown/path', commit).subscribe(
 				() => ({}),
 				(e) => (err = e)

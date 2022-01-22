@@ -17,6 +17,20 @@ export class CommitFilesViewComponent {
 
 	private commitFilesValue: CommitFile[] = [];
 
+	private readonly treeFlattener = new MatTreeFlattener(
+		this.transformer,
+		(node) => node.level,
+		(node) => node.expandable,
+		(node) => node.children
+	);
+
+	readonly treeControl = new FlatTreeControl<CommitFileFlatNode>(
+		(node) => node.level,
+		(node) => node.expandable
+	);
+
+	readonly dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
 	get commitFiles(): CommitFile[] {
 		return this.commitFilesValue;
 	}
@@ -38,20 +52,6 @@ export class CommitFilesViewComponent {
 			selected: false,
 		};
 	}
-
-	private readonly treeFlattener = new MatTreeFlattener(
-		this.transformer,
-		(node) => node.level,
-		(node) => node.expandable,
-		(node) => node.children
-	);
-
-	readonly treeControl = new FlatTreeControl<CommitFileFlatNode>(
-		(node) => node.level,
-		(node) => node.expandable
-	);
-
-	readonly dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
 
 	hasChild(_: number, node: CommitFileFlatNode): boolean {
 		return node.expandable;

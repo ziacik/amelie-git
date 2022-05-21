@@ -63,7 +63,7 @@
 				"test": {
 					"builder": "@nrwl/jest:jest",
 					"options": {
-						"jestConfig": "apps/app/jest.config.js",
+						"jestConfig": "apps/app/jest.config.ts",
 						"passWithNoTests": true
 					},
 					"outputs": ["coverage/apps/app"]
@@ -86,7 +86,7 @@
 				"test": {
 					"builder": "@nrwl/jest:jest",
 					"options": {
-						"jestConfig": "libs/core/jest.config.js",
+						"jestConfig": "libs/core/jest.config.ts",
 						"passWithNoTests": true
 					},
 					"outputs": ["coverage/libs/core"]
@@ -114,7 +114,7 @@
 				"test": {
 					"builder": "@nrwl/jest:jest",
 					"options": {
-						"jestConfig": "libs/testing/jest.config.js",
+						"jestConfig": "libs/testing/jest.config.ts",
 						"passWithNoTests": true
 					},
 					"outputs": ["coverage/libs/testing"]
@@ -203,7 +203,7 @@
 				"test": {
 					"builder": "@nrwl/jest:jest",
 					"options": {
-						"jestConfig": "apps/web/jest.config.js",
+						"jestConfig": "apps/web/jest.config.ts",
 						"passWithNoTests": true
 					},
 					"outputs": ["coverage/apps/web"]

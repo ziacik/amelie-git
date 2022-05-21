@@ -1,6 +1,6 @@
 const { getJestProjects } = require('@nrwl/jest');
 
-module.exports = {
+export default {
 	clearMocks: true,
 	projects: getJestProjects(),
 };

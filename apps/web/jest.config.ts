@@ -1,5 +1,6 @@
-module.exports = {
-	displayName: 'core',
+/* eslint-disable */
+export default {
+	displayName: 'web',
 	preset: '../../jest.preset.js',
 	setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
 	globals: {
@@ -9,7 +10,7 @@ module.exports = {
 			tsconfig: '<rootDir>/tsconfig.spec.json',
 		},
 	},
-	coverageDirectory: '../../coverage/libs/core',
+	coverageDirectory: '../../coverage/apps/web',
 
 	transform: {
 		'^.+.(ts|mjs|js|html)$': 'jest-preset-angular',

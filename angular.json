@@ -71,6 +71,58 @@
 			},
 			"tags": []
 		},
+		"backend": {
+			"root": "apps/backend",
+			"sourceRoot": "apps/backend/src",
+			"projectType": "application",
+			"architect": {
+				"build": {
+					"builder": "@nrwl/node:webpack",
+					"outputs": ["{options.outputPath}"],
+					"options": {
+						"outputPath": "dist/apps/backend",
+						"main": "apps/backend/src/main.ts",
+						"tsConfig": "apps/backend/tsconfig.app.json",
+						"assets": ["apps/backend/src/assets"]
+					},
+					"configurations": {
+						"production": {
+							"optimization": true,
+							"extractLicenses": true,
+							"inspect": false,
+							"fileReplacements": [
+								{
+									"replace": "apps/backend/src/environments/environment.ts",
+									"with": "apps/backend/src/environments/environment.prod.ts"
+								}
+							]
+						}
+					}
+				},
+				"serve": {
+					"builder": "@nrwl/node:node",
+					"options": {
+						"buildTarget": "backend:build"
+					}
+				},
+				"lint": {
+					"builder": "@nrwl/linter:eslint",
+					"outputs": ["{options.outputFile}"],
+					"options": {
+						"lintFilePatterns": ["apps/backend/**/*.ts"]
+					}
+				},
+				"test": {
+					"builder": "@nrwl/jest:jest",
+					"outputs": ["coverage/apps/backend"],
+					"options": {
+						"jestConfig": "apps/backend/jest.config.ts",
+						"passWithNoTests": true
+					}
+				}
+			},
+			"tags": []
+		},
 		"core": {
 			"projectType": "library",
 			"root": "libs/core",
@@ -180,7 +232,8 @@
 				"serve": {
 					"builder": "@angular-devkit/build-angular:dev-server",
 					"options": {
-						"browserTarget": "web:build"
+						"browserTarget": "web:build",
+						"proxyConfig": "apps/web/proxy.conf.json"
 					},
 					"configurations": {
 						"production": {

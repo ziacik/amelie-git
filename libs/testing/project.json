@@ -1,0 +1,23 @@
+{
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"sourceRoot": "libs/testing/src",
+	"projectType": "library",
+	"generators": {},
+	"targets": {
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["libs/testing/**/*.ts", "libs/testing/src/**/*.html"]
+			}
+		},
+		"test": {
+			"executor": "@nrwl/jest:jest",
+			"options": {
+				"jestConfig": "libs/testing/jest.config.ts",
+				"passWithNoTests": true
+			},
+			"outputs": ["coverage/libs/testing"]
+		}
+	},
+	"tags": []
+}

@@ -24,17 +24,6 @@
 			}
 		}
 	},
-	"targetDependencies": {
-		"build": [
-			{
-				"target": "build",
-				"projects": "dependencies"
-			}
-		]
-	},
-	"cli": {
-		"defaultCollection": "@nrwl/angular"
-	},
 	"defaultProject": "web",
 	"generators": {
 		"@nrwl/angular": {
@@ -54,6 +43,12 @@
 		},
 		"@nrwl/angular:library": {
 			"unitTestRunner": "jest"
+		}
+	},
+	"$schema": "./node_modules/nx/schemas/nx-schema.json",
+	"targetDefaults": {
+		"build": {
+			"dependsOn": ["^build"]
 		}
 	}
 }

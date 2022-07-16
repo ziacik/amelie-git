@@ -2,6 +2,7 @@
 	"version": 1,
 	"projects": {
 		"backend": {
+			"$schema": "../../node_modules/nx/schemas/project-schema.json",
 			"root": "apps/backend",
 			"sourceRoot": "apps/backend/src",
 			"projectType": "application",
@@ -54,6 +55,7 @@
 			"tags": []
 		},
 		"core": {
+			"$schema": "../../node_modules/nx/schemas/project-schema.json",
 			"projectType": "library",
 			"root": "libs/core",
 			"sourceRoot": "libs/core/src",
@@ -82,6 +84,7 @@
 			"tags": []
 		},
 		"testing": {
+			"$schema": "../../node_modules/nx/schemas/project-schema.json",
 			"root": "libs/testing",
 			"sourceRoot": "libs/testing/src",
 			"projectType": "library",
@@ -105,6 +108,7 @@
 			"tags": []
 		},
 		"web": {
+			"$schema": "../../node_modules/nx/schemas/project-schema.json",
 			"projectType": "application",
 			"schematics": {
 				"@schematics/angular:component": {
@@ -195,6 +199,7 @@
 			"tags": []
 		},
 		"web-e2e": {
+			"$schema": "../../node_modules/nx/schemas/project-schema.json",
 			"root": "apps/web-e2e",
 			"sourceRoot": "apps/web-e2e/src",
 			"projectType": "application",

@@ -42,5 +42,7 @@ Thumbs.db
 # Neutralino
 neutralinojs.log
 .tmp/
+apps/app/bin/
+apps/app/dist/
 apps/backend/bin/
 apps/backend/dist/

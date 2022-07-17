@@ -1,7 +1,7 @@
 {
 	"version": 2,
 	"projects": {
-		"backend": "apps/backend",
+		"app": "apps/app",
 		"core": "libs/core",
 		"testing": "libs/testing",
 		"web": "apps/web",

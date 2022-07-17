@@ -1,14 +1,14 @@
 {
 	"$schema": "../../node_modules/nx/schemas/project-schema.json",
-	"sourceRoot": "apps/backend/src",
+	"sourceRoot": "apps/app/src",
 	"projectType": "application",
 	"targets": {
 		"prepare": {
 			"executor": "nx:run-commands",
-			"outputs": ["apps/backend/bin"],
+			"outputs": ["apps/app/bin"],
 			"options": {
 				"command": "npx @neutralinojs/neu update",
-				"cwd": "apps/backend",
+				"cwd": "apps/app",
 				"parallel": false
 			}
 		},
@@ -16,10 +16,10 @@
 			"executor": "@nrwl/node:webpack",
 			"outputs": ["{options.outputPath}"],
 			"options": {
-				"outputPath": "dist/apps/backend",
-				"main": "apps/backend/src/main.ts",
-				"tsConfig": "apps/backend/tsconfig.app.json",
-				"assets": ["apps/backend/src/assets"]
+				"outputPath": "dist/apps/app",
+				"main": "apps/app/src/main.ts",
+				"tsConfig": "apps/app/tsconfig.app.json",
+				"assets": ["apps/app/src/assets"]
 			},
 			"configurations": {
 				"production": {
@@ -28,8 +28,8 @@
 					"inspect": false,
 					"fileReplacements": [
 						{
-							"replace": "apps/backend/src/environments/environment.ts",
-							"with": "apps/backend/src/environments/environment.prod.ts"
+							"replace": "apps/app/src/environments/environment.ts",
+							"with": "apps/app/src/environments/environment.prod.ts"
 						}
 					]
 				}
@@ -40,7 +40,7 @@
 			"dependsOn": ["prepare"],
 			"options": {
 				"command": "npx @neutralinojs/neu run -- --url=http://localhost:4200",
-				"cwd": "apps/backend",
+				"cwd": "apps/app",
 				"parallel": false
 			}
 		},
@@ -48,14 +48,14 @@
 			"executor": "@nrwl/linter:eslint",
 			"outputs": ["{options.outputFile}"],
 			"options": {
-				"lintFilePatterns": ["apps/backend/**/*.ts"]
+				"lintFilePatterns": ["apps/app/**/*.ts"]
 			}
 		},
 		"test": {
 			"executor": "@nrwl/jest:jest",
-			"outputs": ["coverage/apps/backend"],
+			"outputs": ["coverage/apps/app"],
 			"options": {
-				"jestConfig": "apps/backend/jest.config.ts",
+				"jestConfig": "apps/app/jest.config.ts",
 				"passWithNoTests": true
 			}
 		}

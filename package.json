@@ -21,6 +21,7 @@
 		"@angular/platform-browser": "~14.0.0",
 		"@angular/platform-browser-dynamic": "~14.0.0",
 		"@angular/router": "~14.0.0",
+		"@neutralinojs/neu": "^9.3.1",
 		"@ngneat/until-destroy": "^9.2.0",
 		"@nrwl/angular": "14.4.3",
 		"diff": "^5.0.0",

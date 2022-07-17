@@ -38,3 +38,9 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Neutralino
+neutralinojs.log
+.tmp/
+apps/backend/bin/
+apps/backend/dist/

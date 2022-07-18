@@ -19,6 +19,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"@amelie-git/core": ["libs/core/src/index.ts"],
+			"@amelie-git/ipc": ["libs/ipc/src/index.ts"],
 			"@amelie-git/testing": ["libs/testing/src/index.ts"]
 		}
 	},

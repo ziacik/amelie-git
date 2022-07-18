@@ -1,0 +1,23 @@
+{
+	"$schema": "../../node_modules/nx/schemas/project-schema.json",
+	"projectType": "library",
+	"sourceRoot": "libs/ipc/src",
+	"prefix": "amelie-git",
+	"targets": {
+		"test": {
+			"executor": "@nrwl/jest:jest",
+			"outputs": ["coverage/libs/ipc"],
+			"options": {
+				"jestConfig": "libs/ipc/jest.config.ts",
+				"passWithNoTests": true
+			}
+		},
+		"lint": {
+			"executor": "@nrwl/linter:eslint",
+			"options": {
+				"lintFilePatterns": ["libs/ipc/**/*.ts", "libs/ipc/**/*.html"]
+			}
+		}
+	},
+	"tags": []
+}

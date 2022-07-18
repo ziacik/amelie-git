@@ -45,3 +45,5 @@ neutralinojs.log
 apps/app/bin/
 apps/app/dist/
 apps/app/resources/js/neutralino.js
+
+.angular

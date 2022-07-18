@@ -3,6 +3,7 @@
 	"projects": {
 		"app": "apps/app",
 		"core": "libs/core",
+		"ipc": "libs/ipc",
 		"testing": "libs/testing",
 		"web": "apps/web",
 		"web-e2e": "apps/web-e2e"

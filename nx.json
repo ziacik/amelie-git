@@ -1,44 +1,36 @@
 {
+	"$schema": "./node_modules/nx/schemas/nx-schema.json",
 	"npmScope": "amelie-git",
 	"affected": {
 		"defaultBase": "master"
 	},
+	"cli": {
+		"packageManager": "npm"
+	},
 	"implicitDependencies": {
-		"angular.json": "*",
 		"package.json": {
 			"dependencies": "*",
 			"devDependencies": "*"
 		},
-		"tsconfig.base.json": "*",
-		"tslint.json": "*",
-		".eslintrc.json": "*",
-		"nx.json": "*"
+		".eslintrc.json": "*"
 	},
 	"tasksRunnerOptions": {
 		"default": {
 			"runner": "@nrwl/nx-cloud",
 			"options": {
 				"cacheableOperations": ["build", "lint", "test", "e2e"],
-				"accessToken": "NjE2MDAwNjgtMTc5Ni00MDY5LWI4MzItNGE5N2Y2NDhhYTc5fHJlYWQtd3JpdGU=",
-				"parallel": 3
+				"accessToken": "NjE2MDAwNjgtMTc5Ni00MDY5LWI4MzItNGE5N2Y2NDhhYTc5fHJlYWQtd3JpdGU="
 			}
 		}
 	},
-	"defaultProject": "web",
+	"targetDefaults": {
+		"build": {
+			"dependsOn": ["^build"]
+		}
+	},
 	"generators": {
-		"@nrwl/angular": {
-			"application": {
-				"linter": "eslint"
-			},
-			"library": {
-				"linter": "eslint"
-			},
-			"storybook-configuration": {
-				"linter": "eslint"
-			}
-		},
 		"@nrwl/angular:application": {
-			"style": "css",
+			"style": "scss",
 			"linter": "eslint",
 			"unitTestRunner": "jest",
 			"e2eTestRunner": "cypress"
@@ -48,13 +40,8 @@
 			"unitTestRunner": "jest"
 		},
 		"@nrwl/angular:component": {
-			"style": "css"
+			"style": "scss"
 		}
 	},
-	"$schema": "./node_modules/nx/schemas/nx-schema.json",
-	"targetDefaults": {
-		"build": {
-			"dependsOn": ["^build"]
-		}
-	}
+	"defaultProject": "web"
 }

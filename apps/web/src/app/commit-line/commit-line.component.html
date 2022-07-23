@@ -11,11 +11,11 @@
 			/>
 		</ng-container>
 		<circle
-			[attr.cx]="9 + 18 * positionedCommit?.position + 'px'"
+			[attr.cx]="9 + 18 * (positionedCommit?.position ?? 0) + 'px'"
 			cy="24px"
 			r="6px"
-			[attr.fill]="colorFor(positionedCommit?.position)"
+			[attr.fill]="colorFor(positionedCommit?.position ?? 0)"
 		/>
 	</svg>
-	<div style="margin-left: 18px">{{ positionedCommit?.commit.name }}</div>
+	<div style="margin-left: 18px">{{ positionedCommit?.commit?.name ?? '' }}</div>
 </div>

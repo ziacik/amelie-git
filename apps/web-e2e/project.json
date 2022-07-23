@@ -7,8 +7,7 @@
 			"executor": "@nrwl/cypress:cypress",
 			"options": {
 				"cypressConfig": "apps/web-e2e/cypress.json",
-				"tsConfig": "apps/web-e2e/tsconfig.e2e.json",
-				"devServerTarget": "web:serve"
+				"devServerTarget": "web:serve:development"
 			},
 			"configurations": {
 				"production": {
@@ -18,8 +17,9 @@
 		},
 		"lint": {
 			"executor": "@nrwl/linter:eslint",
+			"outputs": ["{options.outputFile}"],
 			"options": {
-				"lintFilePatterns": ["apps/web-e2e/**/*.{js,ts}", "apps/web-e2e/src/**/*.html"]
+				"lintFilePatterns": ["apps/web-e2e/**/*.{js,ts}"]
 			}
 		}
 	},

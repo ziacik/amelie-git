@@ -47,9 +47,16 @@ describe('CommitFilesViewComponent', () => {
 		expect(component.rootNode.children[0].children.map((node) => node.name)).toEqual(['fileD']);
 		expect(component.rootNode.children[1].children.map((node) => node.name)).toEqual(['to/some', 'fileA']);
 		expect(component.rootNode.children[1].children[0].children.map((node) => node.name)).toEqual(['fileB', 'fileC']);
-		expect(component.rootNode.children.map((node) => node.file)).toEqual([NULL_COMMIT_FILE, NULL_COMMIT_FILE, commitFiles[0]]);
+		expect(component.rootNode.children.map((node) => node.file)).toEqual([
+			NULL_COMMIT_FILE,
+			NULL_COMMIT_FILE,
+			commitFiles[0],
+		]);
 		expect(component.rootNode.children[0].children.map((node) => node.file)).toEqual([commitFiles[1]]);
-		expect(component.rootNode.children[1].children.map((node) => node.file)).toEqual([NULL_COMMIT_FILE, commitFiles[2]]);
+		expect(component.rootNode.children[1].children.map((node) => node.file)).toEqual([
+			NULL_COMMIT_FILE,
+			commitFiles[2],
+		]);
 		expect(component.rootNode.children[1].children[0].children.map((node) => node.file)).toEqual([
 			commitFiles[3],
 			commitFiles[4],

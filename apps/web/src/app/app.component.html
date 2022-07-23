@@ -4,9 +4,16 @@
 	<mat-drawer-container *ngIf="repository" autosize>
 		<mat-drawer #drawer mode="side" opened>
 			<app-branch-view *ngIf="branches$ | async as branches" [branches]="branches"></app-branch-view>
-			<app-commit-files-view *ngIf="commitFiles$ | async as commitFiles" [commitFiles]="commitFiles"></app-commit-files-view>
+			<app-commit-files-view
+				*ngIf="commitFiles$ | async as commitFiles"
+				[commitFiles]="commitFiles"
+			></app-commit-files-view>
 		</mat-drawer>
 
-		<app-log-view *ngIf="commits$ | async as commits" [commits]="commits" (selectionChange)="onCommitSelectionChanged($event)"></app-log-view>
+		<app-log-view
+			*ngIf="commits$ | async as commits"
+			[commits]="commits"
+			(selectionChange)="onCommitSelectionChanged($event)"
+		></app-log-view>
 	</mat-drawer-container>
 </main>

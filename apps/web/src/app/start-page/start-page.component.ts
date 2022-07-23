@@ -1,7 +1,7 @@
+import { IpcService } from '@amelie-git/ipc';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { filter } from 'rxjs/operators';
-import { ElectronService } from '../electron.service';
+import { filter, from } from 'rxjs';
 
 @UntilDestroy()
 @Component({
@@ -12,12 +12,11 @@ import { ElectronService } from '../electron.service';
 export class StartPageComponent {
 	@Output() repositoryOpened = new EventEmitter<string>();
 
-	constructor(private electronService: ElectronService) {}
+	constructor(private readonly ipcService: IpcService) {}
 
 	openRepository(): void {
-		this.electronService
-			.invoke<string>('open-repository')
-			.pipe<string, string>(untilDestroyed(this), filter<string>(Boolean))
+		from(this.ipcService.openRepository())
+			.pipe(filter(Boolean), untilDestroyed(this))
 			.subscribe((value: string) => this.repositoryOpened.emit(value));
 	}
 }

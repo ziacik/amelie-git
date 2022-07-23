@@ -1,27 +1,23 @@
-import { Branch, Commit, CommitFile, Diff } from '@amelie-git/core';
+import { Branch, Commit, CommitFile } from '@amelie-git/core';
+import { IpcService } from '@amelie-git/ipc';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { ElectronService } from './electron.service';
+import { from, Observable } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',
 })
 export class RepositoryService {
-	constructor(private readonly electronService: ElectronService) {}
+	constructor(private readonly ipc: IpcService) {}
 
 	getLog(pathToRepository: string): Observable<Commit[]> {
-		return this.electronService.invoke('get-log', pathToRepository);
+		return from(this.ipc.getLog(pathToRepository));
 	}
 
 	getBranches(pathToRepository: string): Observable<Branch[]> {
-		return this.electronService.invoke('get-branches', pathToRepository);
+		return from(this.ipc.getBranches(pathToRepository));
 	}
 
 	getCommitFiles(pathToRepository: string, commit: Commit): Observable<CommitFile[]> {
-		return this.electronService.invoke('get-commit-files', pathToRepository, commit);
-	}
-
-	getDiff(pathToRepository: string): Observable<Diff[]> {
-		return this.electronService.invoke('get-diff', pathToRepository);
+		return from(this.ipc.getCommitFiles(pathToRepository, commit));
 	}
 }

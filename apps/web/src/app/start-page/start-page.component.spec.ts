@@ -1,56 +1,46 @@
+import { IpcService } from '@amelie-git/ipc';
+import { wait } from '@amelie-git/testing';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
-import { of, throwError } from 'rxjs';
-import { ElectronService } from '../electron.service';
 import { StartPageComponent } from './start-page.component';
 
 describe('StartPageComponent', () => {
 	let fixture: ComponentFixture<StartPageComponent>;
 	let component: StartPageComponent;
-	let electronService: ElectronService;
+	let ipcService: IpcService;
 
 	beforeEach(async () => {
 		await TestBed.configureTestingModule({
 			declarations: [StartPageComponent],
-			providers: [ElectronService],
+			providers: [IpcService],
 		}).compileComponents();
 	});
 
 	beforeEach(() => {
-		electronService = TestBed.inject(ElectronService);
-		jest.spyOn(electronService, 'invoke').mockImplementation((channel) => {
-			if (channel === 'open-repository') {
-				return of('/path/to/repository');
-			}
-			return throwError(new Error('Some error'));
-		});
-
+		ipcService = TestBed.inject(IpcService);
+		jest.spyOn(ipcService, 'openRepository').mockResolvedValue('/path/to/repository');
 		fixture = TestBed.createComponent(StartPageComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
 	});
 
 	describe('open repository button', () => {
-		it('invokes open-repository message', () => {
-			const button = fixture.debugElement.query(By.css('#open-repository')).nativeElement;
-			button.click();
-			expect(electronService.invoke).toHaveBeenCalledWith('open-repository');
-		});
-
-		it('emits an repositoryOpened event if the result is not empty', () => {
-			let repositoryOpenedValue: string | undefined = undefined;
+		it('calls ipc and emits an repositoryOpened event if the result is not empty', async () => {
+			let repositoryOpenedValue = 'should-not-stay-this';
 			component.repositoryOpened.subscribe((value: string) => (repositoryOpenedValue = value));
 			const button = fixture.debugElement.query(By.css('#open-repository')).nativeElement;
 			button.click();
+			await wait();
 			expect(repositoryOpenedValue).toEqual('/path/to/repository');
 		});
 
-		it('does not emits repositoryOpened event if the result is null', () => {
+		it('calls ipc and does not emit repositoryOpened event if the result is undefined', async () => {
 			let repositoryOpenedValue = 'should-stay-this';
 			component.repositoryOpened.subscribe((value: string) => (repositoryOpenedValue = value));
-			(electronService.invoke as jest.Mock).mockReturnValue(of(null));
+			(ipcService.openRepository as jest.Mock).mockResolvedValue(undefined);
 			const button = fixture.debugElement.query(By.css('#open-repository')).nativeElement;
 			button.click();
+			await wait();
 			expect(repositoryOpenedValue).toEqual('should-stay-this');
 		});
 	});

@@ -10,27 +10,28 @@ export class IpcService {
 	}
 
 	async openRepository(): Promise<string | undefined> {
-		return Neutralino.os.showFolderDialog('Open git repository');
+		const path = await Neutralino.os.showFolderDialog('Open git repository');
+		const gitResult = await Neutralino.os.execCommand(`git -C "${path}" status`);
+		checkError(gitResult);
+		return path;
 	}
 
 	async getLog(path: string): Promise<Commit[]> {
-		const result = await Neutralino.os.execCommand(
+		const gitResult = await Neutralino.os.execCommand(
 			`git -C "${path}" log --topo-order --date iso8601-strict --pretty=full --parents`
 		);
 
-		checkError(result);
-
-		return splitToCommits(splitLines(result.stdOut)).map(parseCommitLines);
+		checkError(gitResult);
+		return splitToCommits(splitLines(gitResult.stdOut)).map(parseCommitLines);
 	}
 
 	async getBranches(path: string): Promise<Branch[]> {
-		const result = await Neutralino.os.execCommand(
+		const gitResult = await Neutralino.os.execCommand(
 			`git -C "${path}" for-each-ref --format='%(refname:short)' refs/heads/`
 		);
 
-		checkError(result);
-
-		return splitLines(result.stdOut).filter(Boolean).map(parseBranchLine);
+		checkError(gitResult);
+		return splitLines(gitResult.stdOut).filter(Boolean).map(parseBranchLine);
 	}
 
 	async getCommitFiles(path: string, commit: Commit): Promise<CommitFile[]> {

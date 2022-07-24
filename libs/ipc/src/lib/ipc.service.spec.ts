@@ -8,7 +8,7 @@ import { IpcService } from './ipc.service';
 const NeutralinoMock = {
 	init: jest.fn(),
 	os: {
-		showFolderDialog: jest.fn().mockResolvedValue('/selected/path'),
+		showFolderDialog: jest.fn().mockResolvedValue(path.resolve(__dirname, '../__fixtures__/repo')),
 		execCommand: async (command: string): Promise<Neutralino.os.ExecCommandResult> => {
 			return new Promise((resolve) => {
 				const commandFixedForFixture = command.replace('git ', 'git --git-dir=_git ');
@@ -37,9 +37,14 @@ describe('IpcService', () => {
 
 	describe('openRepository', () => {
 		it('opens a folder selection dialog and returns the selected one', async () => {
-			const expected = '/selected/path';
+			const expected = path.resolve(__dirname, '../__fixtures__/repo');
 			const actual = await service.openRepository();
 			expect(actual).toEqual(expected);
+		});
+
+		it('fails if the selected folder is not a git repo', async () => {
+			NeutralinoMock.os.showFolderDialog.mockResolvedValue(path.resolve(__dirname, '../__fixtures__'));
+			await expect(service.openRepository()).rejects.toThrow(`Git error: fatal: not a git repository: '_git'`);
 		});
 	});
 

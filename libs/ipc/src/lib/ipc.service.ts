@@ -5,8 +5,12 @@ import { Injectable } from '@angular/core';
 	providedIn: 'root',
 })
 export class IpcService {
+	constructor() {
+		Neutralino.init();
+	}
+
 	async openRepository(): Promise<string | undefined> {
-		return undefined;
+		return Neutralino.os.showFolderDialog('Open git repository');
 	}
 
 	async getLog(path: string): Promise<Commit[]> {

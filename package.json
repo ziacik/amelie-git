@@ -59,6 +59,7 @@
 		"eslint-plugin-rxjs-angular": "^2.0.0",
 		"jest": "27.5.1",
 		"jest-preset-angular": "~11.1.2",
+		"neutralinojs-types": "^1.1.1",
 		"nx": "14.4.3",
 		"prettier": "^2.6.2",
 		"ts-jest": "27.1.4",

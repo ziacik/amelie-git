@@ -2,7 +2,7 @@
 	"applicationId": "js.neutralino.sample",
 	"version": "1.0.0",
 	"defaultMode": "window",
-	"port": 0,
+	"port": 4201,
 	"documentRoot": "/resources/",
 	"url": "/",
 	"enableServer": true,
@@ -51,7 +51,11 @@
 		"resourcesPath": "/resources/",
 		"extensionsPath": "/extensions/",
 		"clientLibrary": "/resources/js/neutralino.js",
-		"binaryVersion": "4.5.0",
-		"clientVersion": "3.4.0"
+		"binaryVersion": "4.7.0",
+		"clientVersion": "3.6.0",
+		"frontendLibrary": {
+			"patchFile": "src/dummy.html",
+			"devUrl": "http://localhost:4200"
+		}
 	}
 }

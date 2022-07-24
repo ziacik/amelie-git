@@ -39,7 +39,7 @@
 			"executor": "nx:run-commands",
 			"dependsOn": ["prepare"],
 			"options": {
-				"command": "npx @neutralinojs/neu run -- --url=http://localhost:4200",
+				"command": "npx @neutralinojs/neu run --frontend-lib-dev",
 				"cwd": "apps/app",
 				"parallel": false
 			}

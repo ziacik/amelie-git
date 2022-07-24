@@ -18,7 +18,19 @@ export class IpcService {
 	}
 
 	async getBranches(path: string): Promise<Branch[]> {
-		return [];
+		const result = await Neutralino.os.execCommand(
+			`git -C "${path}" for-each-ref --format='%(refname:short)' refs/heads/`
+		);
+
+		if (result.exitCode !== 0) {
+			throw new Error('Git error: ' + result.stdErr);
+		}
+
+		return result.stdOut
+			.split('\n')
+			.map((it) => it.trim())
+			.filter(Boolean)
+			.map((name) => new Branch(name));
 	}
 
 	async getCommitFiles(path: string, commit: Commit): Promise<CommitFile[]> {

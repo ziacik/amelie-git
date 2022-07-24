@@ -1,0 +1,7 @@
+0000000000000000000000000000000000000000 5fd9854ce138a6d54224040fc1a11578b944f6da František Žiačik <ziacik@gmail.com> 1615735853 +0100	commit (initial): initial
+5fd9854ce138a6d54224040fc1a11578b944f6da 9a990d4d09f7ffcab07e2dfb666d77f31eeef582 František Žiačik <ziacik@gmail.com> 1615736783 +0100	commit (amend): initial
+9a990d4d09f7ffcab07e2dfb666d77f31eeef582 61c4fef6f915862a51acf5395728954834652d4a František Žiačik <ziacik@gmail.com> 1615736810 +0100	commit (amend): initial commit
+61c4fef6f915862a51acf5395728954834652d4a f2403434af146c2c5bf5150282b8fd50a4f6a7d9 František Žiačik <ziacik@gmail.com> 1615745262 +0100	commit: second
+f2403434af146c2c5bf5150282b8fd50a4f6a7d9 f2403434af146c2c5bf5150282b8fd50a4f6a7d9 František Žiačik <ziacik@gmail.com> 1615745549 +0100	checkout: moving from master to another
+f2403434af146c2c5bf5150282b8fd50a4f6a7d9 f2403434af146c2c5bf5150282b8fd50a4f6a7d9 František Žiačik <ziacik@gmail.com> 1615745601 +0100	checkout: moving from another to master
+f2403434af146c2c5bf5150282b8fd50a4f6a7d9 c47f13559b6d8ab27e8e0c2abba736f24c87bdec František Žiačik <ziacik@gmail.com> 1615745774 +0100	commit: third commit

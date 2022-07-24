@@ -17,8 +17,10 @@ export class IpcService {
 		const result = await Neutralino.os.execCommand(
 			`git -C "${path}" log --topo-order --date iso8601-strict --pretty=full --parents`
 		);
-		const lines = result.stdOut.trim().split('\n');
-		return splitToCommits(lines).map(parseCommitLines);
+
+		checkError(result);
+
+		return splitToCommits(splitLines(result.stdOut)).map(parseCommitLines);
 	}
 
 	async getBranches(path: string): Promise<Branch[]> {
@@ -26,19 +28,23 @@ export class IpcService {
 			`git -C "${path}" for-each-ref --format='%(refname:short)' refs/heads/`
 		);
 
-		if (result.exitCode !== 0) {
-			throw new Error('Git error: ' + result.stdErr);
-		}
+		checkError(result);
 
-		return result.stdOut
-			.split('\n')
-			.map((it) => it.trim())
-			.filter(Boolean)
-			.map(parseBranchLine);
+		return splitLines(result.stdOut).filter(Boolean).map(parseBranchLine);
 	}
 
 	async getCommitFiles(path: string, commit: Commit): Promise<CommitFile[]> {
 		return [];
+	}
+}
+
+function splitLines(text: string) {
+	return text.trim().split('\n');
+}
+
+function checkError(result: Neutralino.os.ExecCommandResult) {
+	if (result.exitCode !== 0) {
+		throw new Error('Git error: ' + result.stdErr);
 	}
 }
 

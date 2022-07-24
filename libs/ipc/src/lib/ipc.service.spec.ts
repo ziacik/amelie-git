@@ -79,5 +79,11 @@ describe('IpcService', () => {
 			expect(commit2.committer.email).toBe('ziacik@gmail.com');
 			expect(commit2.parentIds).toEqual(['61c4fef6f915862a51acf5395728954834652d4a']);
 		});
+
+		it('fails if git fails', async () => {
+			await expect(service.getLog(path.resolve(__dirname, '../__fixtures__'))).rejects.toThrow(
+				`Git error: fatal: not a git repository: '_git'`
+			);
+		});
 	});
 });

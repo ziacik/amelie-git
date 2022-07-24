@@ -35,7 +35,12 @@ export class IpcService {
 	}
 
 	async getCommitFiles(path: string, commit: Commit): Promise<CommitFile[]> {
-		return [];
+		const gitResult = await Neutralino.os.execCommand(
+			`git -C "${path}" diff-tree --no-commit-id --name-only --root -r ${commit.id}`
+		);
+
+		checkError(gitResult);
+		return splitLines(gitResult.stdOut).map((line) => new CommitFile(commit, line));
 	}
 }
 

@@ -1,4 +1,4 @@
-import { Branch } from '@amelie-git/core';
+import { Branch, Commit } from '@amelie-git/core';
 import { TestBed } from '@angular/core/testing';
 import { exec } from 'child_process';
 import path = require('path');
@@ -87,6 +87,50 @@ describe('IpcService', () => {
 
 		it('fails if git fails', async () => {
 			await expect(service.getLog(path.resolve(__dirname, '../__fixtures__'))).rejects.toThrow(
+				`Git error: fatal: not a git repository: '_git'`
+			);
+		});
+	});
+
+	describe('getCommitFiles', () => {
+		let commits: Commit[];
+
+		beforeEach(async () => {
+			commits = await service.getLog(path.resolve(__dirname, '../__fixtures__/repo'));
+		});
+
+		it('will return files that are changed, new or deleted in a commit', async () => {
+			const commitFiles = await service.getCommitFiles(
+				path.resolve(__dirname, '../__fixtures__/repo'),
+				commits[commits.length - 3]
+			);
+			expect(commitFiles.map((it) => it.path)).toEqual(['deleted.txt', 'modified.txt', 'new.txt']);
+		});
+
+		it('will return files that are changed, new or deleted in another commit', async () => {
+			const commitFiles = await service.getCommitFiles(
+				path.resolve(__dirname, '../__fixtures__/repo'),
+				commits[commits.length - 2]
+			);
+			expect(commitFiles.map((it) => it.path)).toEqual(['deleted.txt', 'modified.txt', 'original.txt']);
+		});
+
+		it('will return files that are new in the initial commit', async () => {
+			const commitFiles = await service.getCommitFiles(
+				path.resolve(__dirname, '../__fixtures__/repo'),
+				commits[commits.length - 1]
+			);
+			expect(commitFiles.map((it) => it.path)).toEqual(['initial.txt']);
+		});
+
+		it('will reference correct commit in the files returned', async () => {
+			const commit = commits[commits.length - 2];
+			const commitFiles = await service.getCommitFiles(path.resolve(__dirname, '../__fixtures__/repo'), commit);
+			expect(commitFiles.map((it) => it.commit)).toEqual([commit, commit, commit]);
+		});
+
+		it('fails if git fails', async () => {
+			await expect(service.getCommitFiles(path.resolve(__dirname, '../__fixtures__'), commits[0])).rejects.toThrow(
 				`Git error: fatal: not a git repository: '_git'`
 			);
 		});

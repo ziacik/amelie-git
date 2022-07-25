@@ -19,3 +19,5 @@ jobs:
       - run:
           command: npx nx affected --target=test --base=$NX_BASE
           name: Run Unit Tests
+      - store_test_results:
+          path: ./reports/

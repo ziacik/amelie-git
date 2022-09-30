@@ -13,13 +13,15 @@
 			}
 		},
 		"build": {
-			"executor": "@nrwl/node:webpack",
+			"executor": "@nrwl/webpack:webpack",
 			"outputs": ["{options.outputPath}"],
 			"options": {
 				"outputPath": "dist/apps/app",
 				"main": "apps/app/src/main.ts",
 				"tsConfig": "apps/app/tsconfig.app.json",
-				"assets": ["apps/app/src/assets"]
+				"assets": ["apps/app/src/assets"],
+				"target": "node",
+				"compiler": "tsc"
 			},
 			"configurations": {
 				"production": {
